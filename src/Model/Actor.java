@@ -20,7 +20,10 @@ public class Actor extends Person{
 	
 	
 	public static ArrayList<String> actorsList(){
-		String req = "Select LastName, FirstName from person";
+		String req = "Select LastName, FirstName from person p"
+				+ " join persontype pt on pt.idperson = p.idperson"
+				+ " join \"type\" t on pt.idtype = t.idtype"
+				+ " where t.libelle = \"Actor\"";
 		ResultSet result = Database.read(req);
 		ArrayList<String> actors = new ArrayList<String>();
 		try {

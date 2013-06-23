@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import Model.Actor;
+import Model.Director;
 
 /**
  *
@@ -26,11 +27,7 @@ public class Controller implements ActionListener{
 		return actors;
 	}
 	public ArrayList<String> directorsList(){
-		ArrayList<String> actors = new ArrayList<String>();
-		actors.add("Dir1");
-		actors.add("Dir2");
-		actors.add("Dir3");
-		return actors;
+		return Director.directorsList();
 	}
 	
 	@Override

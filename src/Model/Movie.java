@@ -1,5 +1,7 @@
 package Model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /*
@@ -74,5 +76,24 @@ public class Movie {
 		this.actors = actors;
 		this.sort = sort;
 		this.synopsis = synopsis;
+	}
+	
+	public static ArrayList<String> sortsList(){
+		String req = "Select libelle from sort";
+		ResultSet result = Database.read(req);
+		ArrayList<String> sorts = new ArrayList<String>();
+		try {
+			while(result.next()){
+				String libelle = result.getString(1);
+				sorts.add(libelle);
+			}
+		}
+		catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			Database.disconnect();
+		}
+		return sorts;
 	}
 }
