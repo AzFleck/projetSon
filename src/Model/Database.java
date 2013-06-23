@@ -5,6 +5,7 @@
 package Model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,20 +63,30 @@ public class Database {
 		}
 	}
 
-	public static boolean createDatabase(String file) {
-		try {
-			BufferedReader sql;
-			String requestSql = "";
+	public static void createDatabase(String file) {
+		File f = new File("BddSonVideo.db");
+		//methode pour tester l'existence
+		if ( !f.exists() ) {
+			try {
+				BufferedReader sql;
+				String requestSql = "";
 
-			sql = new BufferedReader(new FileReader("BddMysql/"+file));
-			while (sql.ready()) {
-				requestSql += sql.readLine();				
+				sql = new BufferedReader(new FileReader("BddMysql/"+file));
+				while (sql.ready()) {
+					requestSql += sql.readLine();				
+				}
+				Database.write(requestSql);
+				
+				requestSql = "";
+
+				sql = new BufferedReader(new FileReader("BddMysql/Insert.sql"));
+				while (sql.ready()) {
+					requestSql += sql.readLine();				
+				}
+				Database.write(requestSql);
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
 			}
-			Database.write(requestSql);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			return false;
 		}
-		return true;
 	}
 }
