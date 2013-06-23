@@ -62,7 +62,7 @@ public class Person {
 			while(result.next()){
 				String nom = result.getString(1);
 				String prenom = result.getString(2);
-				persons.add(nom+" "+prenom);
+				persons.add(prenom+" "+nom);
 			}
 		}
 		catch (SQLException ex) {
