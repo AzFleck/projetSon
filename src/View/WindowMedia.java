@@ -14,11 +14,13 @@ import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -32,11 +34,11 @@ public class WindowMedia extends JFrame implements Observer{
 	private JButton btn_repeat;
 	private JButton btn_random;
 	private DefaultTreeModel treeModelMovie;
-	private DefaultTreeModel treeModelSong;
+	private DefaultTreeModel treeModel;
+	private DefaultMutableTreeNode root;
 	private DefaultMutableTreeNode rootMovie;
 	private DefaultMutableTreeNode rootSong;
-	private JTree treeMovie;
-	private JTree treeSong;
+	private JTree tree;
 	private Controller controller;
 	private ArrayList<String> actorslist;
 	private ArrayList<String> directorslist;
@@ -52,12 +54,15 @@ public class WindowMedia extends JFrame implements Observer{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		JLabel nameTreeMovie = new JLabel("Liste des fichiers : blablabal");
+		
 		this.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		JPanel middle = new JPanel();
 		left.setLayout(new GridLayout(2,1));
+		left.add(nameTreeMovie);
 		this.add(left,BorderLayout.WEST);
 		this.add(right,BorderLayout.EAST);
 		this.add(down,BorderLayout.SOUTH);
@@ -77,20 +82,22 @@ public class WindowMedia extends JFrame implements Observer{
 		down.add(btn_stop);
 		down.add(btn_play);
 		down.add(btn_next);
-		this.createTreeMovie();
-		left.add(new JScrollPane(treeMovie));
-		this.createTreeSong();
-		left.add(new JScrollPane(treeSong));
+		this.createTree();
+		left.add(new JScrollPane(tree));
 	}
 	
-	public void createTree(DefaultMutableTreeNode parent, ArrayList<String> children){
+	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children){
 		for(int i = 0; i < children.size(); i++){
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(children.get(i));
 			parent.add(node);
 		}
 	}
 	
-	public void createTreeMovie(){
+	public void createTree(){
+		//Noeaud Files
+		root = new DefaultMutableTreeNode("Files");
+		
+		//Movie
 		rootMovie = new DefaultMutableTreeNode("Movies");
 		DefaultMutableTreeNode actors = new DefaultMutableTreeNode("Actor");
 		DefaultMutableTreeNode directors = new DefaultMutableTreeNode("Director");
@@ -98,18 +105,14 @@ public class WindowMedia extends JFrame implements Observer{
 		actorslist = controller.actorsList();
 		directorslist = controller.directorsList();
 		sortslist = controller.sortsList();
-		this.createTree(actors, actorslist);
-		this.createTree(directors, directorslist);
-		this.createTree(sorts, sortslist);
+		this.createBranches(actors, actorslist);
+		this.createBranches(directors, directorslist);
+		this.createBranches(sorts, sortslist);
 		rootMovie.add(actors);
 		rootMovie.add(directors);
 		rootMovie.add(sorts);
-		treeModelMovie = new DefaultTreeModel(rootMovie);
-		treeMovie = new JTree(treeModelMovie);
 		
-	}
-	
-	public void createTreeSong(){
+		//Song
 		rootSong = new DefaultMutableTreeNode("Song");
 		DefaultMutableTreeNode artists = new DefaultMutableTreeNode("Artist");
 		DefaultMutableTreeNode styles = new DefaultMutableTreeNode("Style");
@@ -117,20 +120,29 @@ public class WindowMedia extends JFrame implements Observer{
 		artistslist = controller.artistsList();
 		styleslist = controller.stylesList();
 		albumslist = controller.albumsList();
-		this.createTree(artists, artistslist);
-		this.createTree(styles, styleslist);
-		this.createTree(album, albumslist);
+		this.createBranches(artists, artistslist);
+		this.createBranches(styles, styleslist);
+		this.createBranches(album, albumslist);
 		rootSong.add(artists);
 		rootSong.add(styles);
 		rootSong.add(album);
-		treeModelSong = new DefaultTreeModel(rootSong);
-		treeSong = new JTree(treeModelSong);
-		
+		root.add(rootMovie);
+		root.add(rootSong);
+		treeModel = new DefaultTreeModel(root);
+		tree = new JTree(treeModel);
+		DefaultMutableTreeNode currentNode = root.getNextNode();
+		do {			
+			if(currentNode.getLevel() == 1)
+			{
+				tree.expandPath(new TreePath(currentNode.getPath()));
+			}
+			currentNode = currentNode.getNextNode();
+		} while (currentNode != null);
 	}
 	
 	public static void main(String args[]){
-		Database.createDatabase("BddSonVideo.sql");
-		Database.createDatabase("Insert.sql");
+		//Database.createDatabase("BddSonVideo.sql");
+		//Database.createDatabase("Insert.sql");
 		new WindowMedia().setVisible(true);
 	}
 
