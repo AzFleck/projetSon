@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import Model.Actor;
 import Model.Director;
+import Model.Movie;
 
 /**
  *
@@ -20,11 +21,7 @@ public class Controller implements ActionListener{
 		return Actor.actorsList();
 	}
 	public ArrayList<String> sortsList(){
-		ArrayList<String> actors = new ArrayList<String>();
-		actors.add("Gore");
-		actors.add("Horreur");
-		actors.add("Action");
-		return actors;
+		return Movie.sortsList();
 	}
 	public ArrayList<String> directorsList(){
 		return Director.directorsList();
