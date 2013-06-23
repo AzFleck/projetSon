@@ -5,6 +5,7 @@
 package View;
 
 import Controller.Controller;
+import Model.Database;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.xml.crypto.Data;
 
 /**
  *
@@ -129,7 +129,8 @@ public class WindowMedia extends JFrame implements Observer{
 	}
 	
 	public static void main(String args[]){
-		Database.createDatabase();
+		Database.createDatabase("BddSonVideo.sql");
+		Database.createDatabase("Insert.sql");
 		new WindowMedia().setVisible(true);
 	}
 
