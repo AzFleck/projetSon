@@ -5,6 +5,7 @@
 package View;
 
 import Controller.Controller;
+import Model.Database;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
