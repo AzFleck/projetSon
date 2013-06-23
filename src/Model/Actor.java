@@ -19,26 +19,8 @@ import java.util.logging.Logger;
 public class Actor extends Person{
 	
 	
-	public static ArrayList<String> actorsList(){
-		String req = "Select LastName, FirstName from person p"
-				+ " join persontype pt on pt.idperson = p.idperson"
-				+ " join \"type\" t on pt.idtype = t.idtype"
-				+ " where t.libelle = \"Actor\"";
-		ResultSet result = Database.read(req);
-		ArrayList<String> actors = new ArrayList<String>();
-		try {
-			while(result.next()){
-				String nom = result.getString(1);
-				String prenom = result.getString(2);
-				actors.add(nom+" "+prenom);
-			}
-		}
-		catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		finally{
-			Database.disconnect();
-		}
-		return actors;
+	public ArrayList<String> actorsList(){
+		
+		return this.generateList("Actor");
 	}
 }

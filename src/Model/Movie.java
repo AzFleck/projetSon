@@ -13,87 +13,13 @@ import java.util.ArrayList;
  *
  * @author Quentin
  */
-public class Movie {
-	private String title; //titre
-	private String date; //date de sortie
+public class Movie extends Media{
 	private ArrayList<Director> director; //réalisateur
 	private ArrayList<Actor> actors; //acteurs participants
-	private ArrayList<String> sort; //genre
 	private String synopsis;
 
-	public ArrayList<Actor> getActors() {
-		return actors;
-	}
-
-	public void setActors(ArrayList<Actor> actors) {
-		this.actors = actors;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	public ArrayList<Director> getDirector() {
-		return director;
-	}
-
-	public void setDirector(ArrayList<Director> director) {
-		this.director = director;
-	}
-
-	public ArrayList<String> getSort() {
-		return sort;
-	}
-
-	public void setSort(ArrayList<String> sort) {
-		this.sort = sort;
-	}
-
-	public String getSynopsis() {
-		return synopsis;
-	}
-
-	public void setSynopsis(String synopsis) {
-		this.synopsis = synopsis;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public Movie(String title, String date, ArrayList<Director> director, ArrayList<Actor> actors, ArrayList<String> sort, String synopsis) {
-		this.title = title;
-		this.date = date;
-		this.director = director;
-		this.actors = actors;
-		this.sort = sort;
-		this.synopsis = synopsis;
-	}
 	
-	public static ArrayList<String> sortsList(){
-		String req = "Select libelle from sort";
-		ResultSet result = Database.read(req);
-		ArrayList<String> sorts = new ArrayList<String>();
-		try {
-			while(result.next()){
-				String libelle = result.getString(1);
-				sorts.add(libelle);
-			}
-		}
-		catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		finally {
-			Database.disconnect();
-		}
-		return sorts;
+	public ArrayList<String> sortsList(){
+		return this.genresList(1);
 	}
 }

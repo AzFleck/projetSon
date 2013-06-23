@@ -51,14 +51,18 @@ public class Person {
 		this.prenom = prenom;
 	}
 	
-	public static ArrayList<String> generateList(String req){
+	protected ArrayList<String> generateList(String type){
+		String req = "Select LastName, FirstName from person p"
+					 + " join persontype pt on pt.idperson = p.idperson"
+					 + " join \"type\" t on pt.idtype = t.idtype"
+					 + " where t.libelle = \""+type+"\"";
 		ResultSet result = Database.read(req);
-		ArrayList<String> actors = new ArrayList<String>();
+		ArrayList<String> persons = new ArrayList<String>();
 		try {
 			while(result.next()){
 				String nom = result.getString(1);
 				String prenom = result.getString(2);
-				actors.add(nom+" "+prenom);
+				persons.add(nom+" "+prenom);
 			}
 		}
 		catch (SQLException ex) {
@@ -67,6 +71,6 @@ public class Person {
 		finally{
 			Database.disconnect();
 		}
-		return actors;
+		return persons;
 	}
 }

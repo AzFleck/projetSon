@@ -8,7 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import Model.Actor;
+import Model.Album;
+import Model.Artist;
 import Model.Director;
+import Model.Movie;
+import Model.Music;
 
 /**
  *
@@ -17,17 +21,16 @@ import Model.Director;
 public class Controller implements ActionListener{
 	
 	public ArrayList<String> actorsList(){
-		return Actor.actorsList();
+		Actor a = new Actor();
+		return a.actorsList();
 	}
 	public ArrayList<String> sortsList(){
-		ArrayList<String> actors = new ArrayList<String>();
-		actors.add("Gore");
-		actors.add("Horreur");
-		actors.add("Action");
-		return actors;
+		Movie m = new Movie();
+		return m.sortsList();
 	}
 	public ArrayList<String> directorsList(){
-		return Director.directorsList();
+		Director d = new Director();
+		return d.directorsList();
 	}
 	
 	@Override
@@ -36,27 +39,18 @@ public class Controller implements ActionListener{
 	}
 
 	public ArrayList<String> artistsList() {
-		ArrayList<String> artists = new ArrayList<String>();
-		artists.add("Art1");
-		artists.add("Art2");
-		artists.add("Art3");
-		return artists;
+		Artist a = new Artist();
+		return a.artistsList();
 	}
 
 	public ArrayList<String> stylesList() {
-		ArrayList<String> styles = new ArrayList<String>();
-		styles.add("Sty1");
-		styles.add("Sty2");
-		styles.add("Sty3");
-		return styles;
+		Music m = new Music();
+		return m.stylesList();
 	}
 
 	public ArrayList<String> albumsList() {
-		ArrayList<String> albums = new ArrayList<String>();
-		albums.add("Alb1");
-		albums.add("Alb2");
-		albums.add("Alb3");
-		return albums;
+		Album a = new Album();
+		return a.albumsList();
 	}
 	
 }
