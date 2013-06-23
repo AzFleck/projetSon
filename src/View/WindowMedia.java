@@ -7,6 +7,7 @@ package View;
 import Controller.Controller;
 import Model.Database;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -54,15 +55,15 @@ public class WindowMedia extends JFrame implements Observer{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JLabel nameTreeMovie = new JLabel("Liste des fichiers : blablabal");
+		JLabel nameTreeMovie = new JLabel("Liste des fichiers :");
 		
 		this.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		JPanel middle = new JPanel();
-		left.setLayout(new GridLayout(2,1));
-		left.add(nameTreeMovie);
+		left.setLayout(new BorderLayout());
+		left.add(nameTreeMovie,BorderLayout.NORTH);
 		this.add(left,BorderLayout.WEST);
 		this.add(right,BorderLayout.EAST);
 		this.add(down,BorderLayout.SOUTH);
@@ -83,7 +84,8 @@ public class WindowMedia extends JFrame implements Observer{
 		down.add(btn_play);
 		down.add(btn_next);
 		this.createTree();
-		left.add(new JScrollPane(tree));
+		tree.setPreferredSize(new Dimension(200,0));
+		left.add(new JScrollPane(tree),BorderLayout.CENTER);
 	}
 	
 	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children){
