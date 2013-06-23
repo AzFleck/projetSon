@@ -141,8 +141,7 @@ public class WindowMedia extends JFrame implements Observer{
 	}
 	
 	public static void main(String args[]){
-		//Database.createDatabase("BddSonVideo.sql");
-		//Database.createDatabase("Insert.sql");
+		Database.createDatabase("BddSonVideo.sql");
 		new WindowMedia().setVisible(true);
 	}
 
