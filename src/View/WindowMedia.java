@@ -129,11 +129,8 @@ public class WindowMedia extends JFrame implements Observer{
 	}
 	
 	public static void main(String args[]){
-<<<<<<< HEAD
 		Database.createDatabase("BddSonVideo.sql");
 		Database.createDatabase("Insert.sql");
-=======
->>>>>>> 48e2640ad582b7368a9acdecdf59ea09f4504136
 		new WindowMedia().setVisible(true);
 	}
 
