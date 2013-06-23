@@ -8,14 +8,12 @@ import Controller.Controller;
 import Model.Database;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -34,7 +32,6 @@ public class WindowMedia extends JFrame implements Observer{
 	private JButton btn_previous;
 	private JButton btn_repeat;
 	private JButton btn_random;
-	private DefaultTreeModel treeModelMovie;
 	private DefaultTreeModel treeModel;
 	private DefaultMutableTreeNode root;
 	private DefaultMutableTreeNode rootMovie;
@@ -55,15 +52,12 @@ public class WindowMedia extends JFrame implements Observer{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JLabel nameTreeMovie = new JLabel("Liste des fichiers :");
-		
 		this.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		JPanel middle = new JPanel();
 		left.setLayout(new BorderLayout());
-		left.add(nameTreeMovie,BorderLayout.NORTH);
 		this.add(left,BorderLayout.WEST);
 		this.add(right,BorderLayout.EAST);
 		this.add(down,BorderLayout.SOUTH);
@@ -97,7 +91,7 @@ public class WindowMedia extends JFrame implements Observer{
 	
 	public void createTree(){
 		//Noeaud Files
-		root = new DefaultMutableTreeNode("Files");
+		root = new DefaultMutableTreeNode("List of files");
 		
 		//Movie
 		rootMovie = new DefaultMutableTreeNode("Movies");
