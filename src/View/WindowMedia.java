@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
@@ -28,8 +30,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -38,7 +44,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Quentin
  */
-public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener {
+public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener, MouseListener{
 	//Elements menu
 	private JMenuBar mb_menuBar;
 	private JMenu m_file;
@@ -65,6 +71,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private ArrayList<String> artistslist;
 	private ArrayList<String> styleslist;
 	private ArrayList<String> albumslist;
+	private JTable tableau;
+	private JPanel middle;
 	
 	public WindowMedia(){
 		controller = new Controller();
@@ -91,7 +99,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
-		JPanel middle = new JPanel();
+		middle = new JPanel();
 		JPanel up = new JPanel();
 		left.setLayout(new BorderLayout());
 		total.add(left,BorderLayout.WEST);
@@ -134,6 +142,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		down.add(btn_stop);
 		down.add(btn_play);
 		down.add(btn_next);
+		
+		generateTable();
 		
 		//Panel left
 		this.createTree();
@@ -216,6 +226,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		root.add(rootSong);
 		treeModel = new DefaultTreeModel(root);
 		tree = new JTree(treeModel);
+		tree.addMouseListener(this);
 		DefaultMutableTreeNode currentNode = root.getNextNode();
 		do {			
 			if(currentNode.getLevel() == 1)
@@ -234,7 +245,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void update(Observable o, Object arg) {
-		this.updatePlayList();
+		//this.updatePlayList();
+		this.generateTable();
 	}
 	
 	public void updatePlayList()
@@ -262,4 +274,51 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		}
 	}
 
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent me) {
+		if(me.getSource() == tree) {
+			TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
+			if (tp != null){ // test si on clique sur un élément
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)tp.getLastPathComponent();
+				String parent = selectedNode.getParent().toString();
+				controller.fileChanged(selectedNode.toString(), parent);
+			}
+		}
+	}
+	
+	public void generateTable(){
+        String[] entetes = {"Title", "Release Date", "Length", "Path"};
+		Object[][] donnees = {};
+		if(controller.getSelection()!=null){
+			donnees = new Object[controller.getSelection().size()][4];
+			for(int i = 0; i < controller.getSelection().size(); i++){
+				donnees[i][0]= controller.getSelection().get(i).getTitle();
+				donnees[i][1]= controller.getSelection().get(i).getDate();
+				donnees[i][2]= controller.getSelection().get(i).getLength();
+				donnees[i][3]= controller.getSelection().get(i).getPath();
+			}
+		}
+        tableau = new JTable(donnees, entetes);
+		tableau.setAutoCreateRowSorter(true);
+		middle.removeAll();
+		middle.add(new JScrollPane(tableau));
+		this.revalidate();
+		this.repaint();
+	}
 }

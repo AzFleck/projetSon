@@ -59,4 +59,34 @@ public class Album {
 		}
 		return album;
 	}
+	
+	public void createAlbum(String name){
+		String req = "Select * from album where libelle = \"" + name + "\"";
+		ResultSet result = Database.read(req);
+		try {
+			result.next();
+			this.setIdAlbum(result.getInt(1));
+			this.setLibelle(result.getString(2));
+			this.setReleaseDate(result.getString(3));
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			Database.disconnect();
+		}
+	}
+	
+	public void createAlbum(int id){
+		String req = "Select * from album where idplaylist = " + id;
+		ResultSet result = Database.read(req);
+		try {
+			result.next();
+			this.setIdAlbum(result.getInt(1));
+			this.setLibelle(result.getString(2));
+			this.setReleaseDate(result.getString(3));
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			Database.disconnect();
+		}
+	}
 }
