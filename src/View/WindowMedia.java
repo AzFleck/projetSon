@@ -100,6 +100,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		middle = new JPanel();
+		middle.setLayout(new BorderLayout());
 		JPanel up = new JPanel();
 		left.setLayout(new BorderLayout());
 		total.add(left,BorderLayout.WEST);
@@ -317,7 +318,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
         tableau = new JTable(donnees, entetes);
 		tableau.setAutoCreateRowSorter(true);
 		middle.removeAll();
-		middle.add(new JScrollPane(tableau));
+		middle.add(new JScrollPane(tableau), BorderLayout.CENTER);
 		this.revalidate();
 		this.repaint();
 	}
