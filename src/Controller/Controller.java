@@ -24,6 +24,96 @@ import java.util.Observable;
 public class Controller extends Observable{
 	
 	private ArrayList<Media> currentPlayList;
+	private String parentSelectedItem;
+	private String selectedItem;
+	private ArrayList<Media> selection;
+
+	public ArrayList<Media> getSelection() {
+		return selection;
+	}
+
+	public void setSelection(ArrayList<Media> selection) {
+		this.selection = selection;
+	}
+
+	public String getSelectedItem() {
+		return selectedItem;
+	}
+
+	public void setSelectedItem(String selectedItem) {
+		this.selectedItem = selectedItem;
+	}
+
+	public String getParentSelectedItem() {
+		return parentSelectedItem;
+	}
+
+	public void setParentSelectedItem(String parentSelectedItem) {
+		this.parentSelectedItem = parentSelectedItem;
+	}
+	
+	public void fileChanged(String selectedItem, String parentItem){
+		this.setSelectedItem(selectedItem);
+		this.setParentSelectedItem(parentItem);
+		this.changeStatement();
+		this.setChanged();
+		this.notifyObservers();
+	}
+	
+	public void changeStatement(){
+		if(parentSelectedItem.equals("Actor")){
+			recoverActor();
+		}
+		else if(parentSelectedItem.equals("Director")){
+			recoverDirector();
+		}
+		else if(parentSelectedItem.equals("Sort")){
+			recoverSort();
+		}
+		else if(parentSelectedItem.equals("Artist")){
+			recoverArtist();
+		}
+		else if(parentSelectedItem.equals("Style")){
+			recoverStyle();
+		}
+		else if(parentSelectedItem.equals("Album")){
+			recoverAlbum();
+		}
+		else if(parentSelectedItem.equals("List of files")){
+			recoverListOfFiles();
+		}
+	}
+	
+	public void recoverActor(){
+		
+	}
+	public void recoverDirector(){
+		
+	}	
+	public void recoverSort(){
+		
+	}	
+	public void recoverArtist(){
+		
+	}	
+	public void recoverStyle(){
+		
+	}	
+	public void recoverAlbum(){
+		Media m = new Media();
+		Album a = new Album();
+		a.createAlbum(selectedItem);
+		this.setSelection(m.getMediaInAlbum(a.getIdAlbum()));
+	}	
+	public void recoverListOfFiles(){
+		Media m = new Media();
+		if(selectedItem.equals("Movies")){
+			this.setSelection(m.getAllMovie());
+		}
+		else if(selectedItem.equals("Song")){
+			this.setSelection(m.getAllSong());
+		}
+	}
 	
 	public ArrayList<String> actorsList(){
 		Actor a = new Actor();

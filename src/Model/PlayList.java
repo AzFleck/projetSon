@@ -34,7 +34,6 @@ public class PlayList {
 	
 	public void createPlaylist(String name){
 		String req = "Select * from playlist where name = \"" + name + "\"";
-		System.out.println(req);
 		ResultSet result = Database.read(req);
 		try {
 			result.next();

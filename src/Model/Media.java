@@ -185,4 +185,19 @@ public class Media {
 		}
 		return medias;
 	}
+	
+	public ArrayList<Media> getAllMovie(){
+		String req = "Select idmovie from movie";
+		return this.getMediasBySomething(req);
+	}
+	
+	public ArrayList<Media> getAllSong(){
+		String req = "Select idmusic from music";
+		return this.getMediasBySomething(req);
+	}
+	
+	public ArrayList<Media> getMediaInAlbum(int numAlbum){
+		String req = "Select idmusic from music where idalbum = "+numAlbum;
+		return this.getMediasBySomething(req);
+	}
 }
