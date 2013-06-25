@@ -21,6 +21,7 @@ import java.util.Observer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -37,7 +38,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Quentin
  */
-public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener{
+public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener {
 	//Elements menu
 	private JMenuBar mb_menuBar;
 	private JMenu m_file;
@@ -100,11 +101,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		total.add(up, BorderLayout.NORTH);
 		
 		//Panel right
-		String data[] = {"test", "test2", "test3"};
 		cbb_playList = new JComboBox<String>();
+		lb_list = new JList<String>();
 		this.generateCbbPlaylist();
 		cbb_playList.addItemListener(this);
-		lb_list = new JList<String>(data);
+		cbb_playList.addActionListener(this);
 		
 		right.setLayout(new BorderLayout());
 		cbb_playList.setPreferredSize(new Dimension(200, 30));
@@ -159,6 +160,15 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		}
 		else if (e.getSource() == btn_stop) {
 			controller.stop();
+		}
+		else if (e.getSource() == cbb_playList) {
+			
+		}
+		else if (e.getSource() == mi_chooseFolder) {
+			JFileChooser fc = new JFileChooser();
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fc.showOpenDialog(this);
+			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath());
 		}
 	}
 	
@@ -251,4 +261,5 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			cbb_playList.addItem(playlists.get(i).getName());
 		}
 	}
+
 }
