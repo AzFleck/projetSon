@@ -1,8 +1,8 @@
 CREATE  TABLE 'File' (
   'idFile' INT NOT NULL ,
-  'Title' VARCHAR(45) NULL ,
+  'Title' VARCHAR(255)NULL ,
   'ReleaseDate' DATE NULL ,
-  'Length' VARCHAR(255) NULL ,
+  'Length' VARCHAR(10)NULL ,
   'Path' VARCHAR(255) NULL ,
   'Find' TINYINT(1) NULL ,
   PRIMARY KEY ('idFile') );

@@ -9,6 +9,7 @@ import Model.Actor;
 import Model.Album;
 import Model.Artist;
 import Model.Director;
+import Model.FindFiles;
 import Model.Media;
 import Model.Movie;
 import Model.Music;
@@ -123,14 +124,7 @@ public class Controller extends Observable{
 	}
 	
 	public void getAllFiles(String pathOfDirectory) {
-		String[] list;
-		ArrayList<String> files = new ArrayList<String>();
-		String pathOfAllFiles = pathOfDirectory + "\\";
-		File f = new File(pathOfAllFiles);
-		
-		list = f.list();
-		for (int i = 0; i < list.length; i++) {
-			files.add(list[i]);
-		}
+		FindFiles files = new FindFiles();
+		files.getAllFiles(pathOfDirectory);
 	}
 }
