@@ -8,12 +8,18 @@ import Controller.Controller;
 import Model.Database;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -26,12 +32,20 @@ import javax.swing.tree.TreePath;
  * @author Quentin
  */
 public class WindowMedia extends JFrame implements Observer{
+	//Elements menu
+	private JMenuBar mb_menuBar;
+	private JMenu m_file;
+	private JMenuItem mi_chooseFolder;
+	
 	private JButton btn_play;
 	private JButton btn_stop;
 	private JButton btn_next;
 	private JButton btn_previous;
 	private JButton btn_repeat;
 	private JButton btn_random;
+	private JComboBox<String> cbb_playList;
+	private JList<String> lb_list;
+	
 	private DefaultTreeModel treeModel;
 	private DefaultMutableTreeNode root;
 	private DefaultMutableTreeNode rootMovie;
@@ -47,22 +61,49 @@ public class WindowMedia extends JFrame implements Observer{
 	
 	public WindowMedia(){
 		controller = new Controller();
+		JPanel total = new JPanel();
+		this.add(total);
 		this.setTitle("Mound Manager");
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.setLayout(new BorderLayout());
+		//Gestion menubar
+		mb_menuBar = new JMenuBar();
+		m_file = new JMenu("Fichier");
+		mi_chooseFolder = new JMenuItem("Choisir dossier");
+		
+		mb_menuBar.add(m_file);
+		m_file.add(mi_chooseFolder);
+		mi_chooseFolder.addActionListener(controller);
+		this.setJMenuBar(mb_menuBar);
+		
+		//Gestion des Jpanel
+		total.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		JPanel middle = new JPanel();
+		JPanel up = new JPanel();
 		left.setLayout(new BorderLayout());
-		this.add(left,BorderLayout.WEST);
-		this.add(right,BorderLayout.EAST);
-		this.add(down,BorderLayout.SOUTH);
-		this.add(middle,BorderLayout.CENTER);
+		total.add(left,BorderLayout.WEST);
+		total.add(right,BorderLayout.EAST);
+		total.add(down,BorderLayout.SOUTH);
+		total.add(middle,BorderLayout.CENTER);
+		total.add(up, BorderLayout.NORTH);
 		
+		//Panel right
+		String data[] = {"test", "test2", "test3"};
+		cbb_playList = new JComboBox<String>();
+		lb_list = new JList<String>(data);
+		
+		right.setLayout(new BorderLayout());
+		cbb_playList.setPreferredSize(new Dimension(200, 30));
+		cbb_playList.setEditable(true);
+		right.add(cbb_playList, BorderLayout.NORTH);
+		right.add(lb_list, BorderLayout.CENTER);
+		
+		//Panel down
 		btn_play = new JButton("Play");
 		btn_stop = new JButton("Stop");
 		btn_next = new JButton("Next");
@@ -70,13 +111,21 @@ public class WindowMedia extends JFrame implements Observer{
 		btn_repeat = new JButton("Repeat");
 		btn_random = new JButton("Random");
 		
-		down.setLayout(new BoxLayout(down, BoxLayout.LINE_AXIS));
+		btn_play.addActionListener(controller);
+		btn_stop.addActionListener(controller);
+		btn_next.addActionListener(controller);
+		btn_previous.addActionListener(controller);
+		btn_random.addActionListener(controller);
+		btn_repeat.addActionListener(controller);
+		
 		down.add(btn_repeat);
 		down.add(btn_random);
 		down.add(btn_previous);
 		down.add(btn_stop);
 		down.add(btn_play);
 		down.add(btn_next);
+		
+		//Panel left
 		this.createTree();
 		tree.setPreferredSize(new Dimension(200,0));
 		left.add(new JScrollPane(tree),BorderLayout.CENTER);

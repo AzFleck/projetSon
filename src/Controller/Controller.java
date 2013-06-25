@@ -53,4 +53,43 @@ public class Controller implements ActionListener{
 		return a.albumsList();
 	}
 	
+	public void play()
+	{
+		
+	}
+	
+	public void pause()
+	{
+		
+	}
+	
+	public void stop()
+	{
+		
+	}
+	
+	public void next()
+	{
+		
+	}
+	
+	public void previous()
+	{
+		
+	}
+	
+	public void random()
+	{
+		
+	}
+	
+	public void repeat()
+	{
+		
+	}
+	
+	public void chooseFolder()
+	{
+		
+	}
 }
