@@ -4,21 +4,23 @@
  */
 package Controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import Model.Actor;
 import Model.Album;
 import Model.Artist;
 import Model.Director;
+import Model.Media;
 import Model.Movie;
 import Model.Music;
+import java.util.Observable;
 
 /**
  *
  * @author Quentin
  */
-public class Controller implements ActionListener{
+public class Controller extends Observable{
+	
+	private ArrayList<Media> currentPlayList;
 	
 	public ArrayList<String> actorsList(){
 		Actor a = new Actor();
@@ -31,11 +33,6 @@ public class Controller implements ActionListener{
 	public ArrayList<String> directorsList(){
 		Director d = new Director();
 		return d.directorsList();
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	public ArrayList<String> artistsList() {
@@ -55,7 +52,7 @@ public class Controller implements ActionListener{
 	
 	public void play()
 	{
-		
+		this.updatePlayList(1);
 	}
 	
 	public void pause()
@@ -91,5 +88,21 @@ public class Controller implements ActionListener{
 	public void chooseFolder()
 	{
 		
+	}
+
+	public ArrayList<Media> getCurrentPlayList() {
+		return currentPlayList;
+	}
+
+	public void setCurrentPlayList(ArrayList<Media> currentPlayList) {
+		this.currentPlayList = currentPlayList;
+	}
+	
+	public void updatePlayList(String namePlayList)
+	{
+		Media m = new Media();
+		this.setCurrentPlayList(m.getPlaylistsElement(idPlayList));
+		this.setChanged();
+		this.notifyObservers();
 	}
 }

@@ -43,13 +43,23 @@ INSERT INTO FileSort VALUES (4, 3);
 INSERT INTO FileSort VALUES (5, 4);
 INSERT INTO FileSort VALUES (6, 4);
 
-INSERT INTO PersonFile VALUES (1, 1);
-INSERT INTO PersonFile VALUES (1, 2);
-INSERT INTO PersonFile VALUES (2, 3);
-INSERT INTO PersonFile VALUES (3, 1);
-INSERT INTO PersonFile VALUES (4, 4);
-INSERT INTO PersonFile VALUES (4, 5);
-INSERT INTO PersonFile VALUES (4, 6);
+INSERT INTO PersonFile VALUES (1, 1, 1);
+INSERT INTO PersonFile VALUES (1, 2, 1);
+INSERT INTO PersonFile VALUES (2, 3, 1);
+INSERT INTO PersonFile VALUES (3, 1, 1);
+INSERT INTO PersonFile VALUES (4, 4, 3);
+INSERT INTO PersonFile VALUES (4, 5, 3);
+INSERT INTO PersonFile VALUES (4, 6, 3);
+
+INSERT INTO PlayList VALUES (1, "Playlist1");
+INSERT INTO PlayList VALUES (2, "Playlist2");
+
+INSERT INTO FilePlayList VALUES (4, 1);
+INSERT INTO FilePlayList VALUES (5, 1);
+INSERT INTO FilePlayList VALUES (6, 1);
+INSERT INTO FilePlayList VALUES (1, 2);
+INSERT INTO FilePlayList VALUES (2, 2);
+INSERT INTO FilePlayList VALUES (3, 2);
 
 
 

@@ -6,13 +6,18 @@ package View;
 
 import Controller.Controller;
 import Model.Database;
+import Model.Media;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -31,7 +36,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Quentin
  */
-public class WindowMedia extends JFrame implements Observer{
+public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener{
 	//Elements menu
 	private JMenuBar mb_menuBar;
 	private JMenu m_file;
@@ -61,6 +66,7 @@ public class WindowMedia extends JFrame implements Observer{
 	
 	public WindowMedia(){
 		controller = new Controller();
+		controller.addObserver(this);
 		JPanel total = new JPanel();
 		this.add(total);
 		this.setTitle("Mound Manager");
@@ -75,7 +81,7 @@ public class WindowMedia extends JFrame implements Observer{
 		
 		mb_menuBar.add(m_file);
 		m_file.add(mi_chooseFolder);
-		mi_chooseFolder.addActionListener(controller);
+		mi_chooseFolder.addActionListener(this);
 		this.setJMenuBar(mb_menuBar);
 		
 		//Gestion des Jpanel
@@ -95,6 +101,7 @@ public class WindowMedia extends JFrame implements Observer{
 		//Panel right
 		String data[] = {"test", "test2", "test3"};
 		cbb_playList = new JComboBox<String>();
+		cbb_playList.addItemListener(this);
 		lb_list = new JList<String>(data);
 		
 		right.setLayout(new BorderLayout());
@@ -111,12 +118,12 @@ public class WindowMedia extends JFrame implements Observer{
 		btn_repeat = new JButton("Repeat");
 		btn_random = new JButton("Random");
 		
-		btn_play.addActionListener(controller);
-		btn_stop.addActionListener(controller);
-		btn_next.addActionListener(controller);
-		btn_previous.addActionListener(controller);
-		btn_random.addActionListener(controller);
-		btn_repeat.addActionListener(controller);
+		btn_play.addActionListener(this);
+		btn_stop.addActionListener(this);
+		btn_next.addActionListener(this);
+		btn_previous.addActionListener(this);
+		btn_random.addActionListener(this);
+		btn_repeat.addActionListener(this);
 		
 		down.add(btn_repeat);
 		down.add(btn_random);
@@ -129,6 +136,28 @@ public class WindowMedia extends JFrame implements Observer{
 		this.createTree();
 		tree.setPreferredSize(new Dimension(200,0));
 		left.add(new JScrollPane(tree),BorderLayout.CENTER);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btn_play) {
+			controller.play();
+		}
+		else if (e.getSource() == btn_next) {
+			controller.next();
+		}
+		else if (e.getSource() == btn_previous) {
+			controller.previous();
+		}
+		else if (e.getSource() == btn_random) {
+			controller.random();
+		}
+		else if (e.getSource() == btn_repeat) {
+			controller.repeat();
+		}
+		else if (e.getSource() == btn_stop) {
+			controller.stop();
+		}
 	}
 	
 	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children){
@@ -187,11 +216,29 @@ public class WindowMedia extends JFrame implements Observer{
 	
 	public static void main(String args[]){
 		Database.createDatabase("BddSonVideo.sql");
-		new WindowMedia().setVisible(true);
+		WindowMedia windowMedia = new WindowMedia();
+		windowMedia.setVisible(true);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		this.updatePlayList();
+	}
+	
+	public void updatePlayList()
+	{
+		lb_list.removeAll();
+		DefaultListModel<String> data = new DefaultListModel<String>();
+		for (Iterator<Media> it = controller.getCurrentPlayList().iterator(); it.hasNext();) {
+			data.addElement(it.next().getTitle());
+		}
+		lb_list.setModel(data);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getSource() == cbb_playList) {
+			controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+		}
 	}
 }
