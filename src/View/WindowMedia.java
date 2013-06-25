@@ -7,6 +7,7 @@ package View;
 import Controller.Controller;
 import Model.Database;
 import Model.Media;
+import Model.PlayList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -101,6 +102,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		//Panel right
 		String data[] = {"test", "test2", "test3"};
 		cbb_playList = new JComboBox<String>();
+		this.generateCbbPlaylist();
 		cbb_playList.addItemListener(this);
 		lb_list = new JList<String>(data);
 		
@@ -239,6 +241,14 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource() == cbb_playList) {
 			controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+		}
+	}
+	
+	public void generateCbbPlaylist(){
+		cbb_playList.addItem("");
+		ArrayList<PlayList> playlists = controller.getAllPlaylist();
+		for(int i = 0; i < playlists.size() ; i++){
+			cbb_playList.addItem(playlists.get(i).getName());
 		}
 	}
 }

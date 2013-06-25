@@ -12,6 +12,7 @@ import Model.Director;
 import Model.Media;
 import Model.Movie;
 import Model.Music;
+import Model.PlayList;
 import java.util.Observable;
 
 /**
@@ -52,7 +53,7 @@ public class Controller extends Observable{
 	
 	public void play()
 	{
-		this.updatePlayList(1);
+		
 	}
 	
 	public void pause()
@@ -101,8 +102,15 @@ public class Controller extends Observable{
 	public void updatePlayList(String namePlayList)
 	{
 		Media m = new Media();
-		this.setCurrentPlayList(m.getPlaylistsElement(idPlayList));
+		PlayList p = new PlayList();
+		p.createPlaylist(namePlayList);
+		this.setCurrentPlayList(m.getPlaylistsElement(p.getId()));
 		this.setChanged();
 		this.notifyObservers();
+	}
+	
+	public ArrayList<PlayList> getAllPlaylist(){
+		PlayList pl = new PlayList();
+		return pl.getAllPlaylist();
 	}
 }
