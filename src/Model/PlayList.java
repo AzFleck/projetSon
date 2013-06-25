@@ -78,4 +78,32 @@ public class PlayList {
 		}
 		return playlists;
 	}
+	
+	public int getMaxIdPlayList(){
+		String req = "Select max(idplaylist) from playlist";
+		ResultSet result = Database.read(req);
+		int maxId = -1;
+		try {
+			result.next();
+			maxId = result.getInt(1);
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			Database.disconnect();
+		}
+		return maxId;
+	}
+	
+	public void savePlaylist(String name, ArrayList<Media> medias){
+		int newId = this.getMaxIdPlayList() + 1;
+		String reqPlaylist = "insert into playlist values("+newId+", "+name+")";
+		Database.write(reqPlaylist);
+		String reqLiaison = "insert into filePlaylist values ";
+		for(int i = 0; i < medias.size(); i++){
+			int idmedia = medias.get(i).getIdFile();
+			reqLiaison += "("+idmedia+","+newId+"),";
+		}
+		reqLiaison = reqLiaison.substring(0, reqLiaison.length()-1);
+		Database.write(reqLiaison);
+	}
 }
