@@ -99,6 +99,13 @@ public class Controller extends Observable{
 		this.currentPlayList = currentPlayList;
 	}
 	
+	public void savePlaylist(String name){
+		if(this.getCurrentPlayList().size() > 0){
+			PlayList pl = new PlayList();
+			pl.savePlaylist(name, this.getCurrentPlayList());
+		}
+	}
+	
 	public void updatePlayList(String namePlayList)
 	{
 		Media m = new Media();
