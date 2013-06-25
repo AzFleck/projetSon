@@ -144,27 +144,45 @@ public class Media {
 	 * @return 
 	 */
 	public ArrayList<Media> getPlaylistsElement(int idplaylist) {
-		ArrayList<Media> medias = new ArrayList<Media>();
 		String req = "Select idfile from fileplaylist where idplaylist = " + idplaylist;
+		return this.getMediasBySomething(req);
+	}
+	
+	public Media getMediaById(int idmedia){
+		String req = "Select * from file where idfile = " + idmedia;
+		ResultSet rs = Database.read(req);
+		Media med = new Media();
+		med.attributeMedia(rs);
+		return med;
+	}
+	
+	public ArrayList<Media> getMediasByPerson(int idperson){
+		String req = "Select idfile from personfile where idperson = " + idperson;
+		return this.getMediasBySomething(req);
+	}
+	
+	public ArrayList<Media> getMediasByAlbum(int idalbum){
+		String req = "Select idmusic from music where idalbum = " + idalbum;
+		return this.getMediasBySomething(req);
+	}
+	
+	public ArrayList<Media> getMediasBySort(int idsort){
+		String req = "Select idfile from filesort where idsort = " + idsort;
+		return this.getMediasBySomething(req);
+	}
+	
+	private ArrayList<Media> getMediasBySomething(String req){
+		ArrayList<Media> medias = new ArrayList<Media>();
 		ResultSet result = Database.read(req);
 		try {
 			while (result.next()) {
-				String req2 = "Select * from file where idfile = " + result.getInt(1);
-				ResultSet rs = Database.read(req2);
-				Media med = new Media();
-				med.attributeMedia(rs);
-				medias.add(med);
+				medias.add(this.getMediaById(result.getInt(1)));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
 			Database.disconnect();
 		}
-		return medias;
-	}
-	
-	public ArrayList<Media> getMediasByPerson(int idperson){
-		ArrayList<Media> medias = new ArrayList<Media>();
 		return medias;
 	}
 }
