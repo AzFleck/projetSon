@@ -21,49 +21,47 @@ public class Database {
 
 	private static Connection connection;
 
-	public static Connection connect(String dbName) {
+	public static Connection connect(String dbName) throws MonException {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			return DriverManager.getConnection("jdbc:sqlite:" + dbName);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new MonException(e.getMessage());
 		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
+			throw new MonException(ex.getMessage());
 		}
-		return null;
 	}
 
-	public static ResultSet read(String request) {
+	public static ResultSet read(String request) throws MonException {
 		try {
 			connection = Database.connect("BddSonVideo.db");
 			Statement requete = connection.createStatement();
 			ResultSet result = requete.executeQuery(request);
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new MonException(e.getMessage());
 		}
-		return null;
 	}
 
-	public static void write(String request) {
+	public static void write(String request) throws MonException {
 		try {
 			connection = Database.connect("BddSonVideo.db");
 			Statement requete = connection.createStatement();
 			requete.executeUpdate(request);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new MonException(e.getMessage());
 		}
 	}
 
-	public static void disconnect() {
+	public static void disconnect() throws MonException {
 		try {
 			connection.close();
 		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+			throw new MonException(ex.getMessage());
 		}
 	}
 
-	public static void createDatabase(String file) {
+	public static void createDatabase(String file) throws MonException {
 		File f = new File("BddSonVideo.db");
 		//methode pour tester l'existence
 		if ( !f.exists() ) {
@@ -85,7 +83,7 @@ public class Database {
 				}
 				Database.write(requestSql);
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				throw new MonException(e.getMessage());
 			}
 		}
 	}

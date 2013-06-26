@@ -14,9 +14,12 @@ import java.util.ArrayList;
  * @author Quentin
  */
 public class Director extends Person{
-		
-	
-	public ArrayList<String> directorsList(){
+	/**
+	 * Renvoi la liste des réalisateurs présents dans la base
+	 * @return Arraylist des réalisateurs
+	 * @throws MonException 
+	 */
+	public ArrayList<String> directorsList() throws MonException{
 		return this.generateList("Director");
 	}
 }

@@ -7,6 +7,7 @@ package View;
 import Controller.Controller;
 import Model.Database;
 import Model.Media;
+import Model.MonException;
 import Model.PlayList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -29,13 +30,11 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -44,12 +43,12 @@ import javax.swing.tree.TreePath;
  *
  * @author Quentin
  */
-public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener, MouseListener{
+public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener, MouseListener {
 	//Elements menu
+
 	private JMenuBar mb_menuBar;
 	private JMenu m_file;
 	private JMenuItem mi_chooseFolder;
-	
 	private JButton btn_play;
 	private JButton btn_stop;
 	private JButton btn_next;
@@ -58,7 +57,6 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private JButton btn_random;
 	private JComboBox<String> cbb_playList;
 	private JList<String> lb_list;
-	
 	private DefaultTreeModel treeModel;
 	private DefaultMutableTreeNode root;
 	private DefaultMutableTreeNode rootMovie;
@@ -73,8 +71,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private ArrayList<String> albumslist;
 	private JTable tableau;
 	private JPanel middle;
-	
-	public WindowMedia(){
+
+	public WindowMedia() {
 		controller = new Controller();
 		controller.addObserver(this);
 		JPanel total = new JPanel();
@@ -83,17 +81,17 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		//Gestion menubar
 		mb_menuBar = new JMenuBar();
 		m_file = new JMenu("Fichier");
 		mi_chooseFolder = new JMenuItem("Choisir dossier");
-		
+
 		mb_menuBar.add(m_file);
 		m_file.add(mi_chooseFolder);
 		mi_chooseFolder.addActionListener(this);
 		this.setJMenuBar(mb_menuBar);
-		
+
 		//Gestion des Jpanel
 		total.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
@@ -103,25 +101,25 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		middle.setLayout(new BorderLayout());
 		JPanel up = new JPanel();
 		left.setLayout(new BorderLayout());
-		total.add(left,BorderLayout.WEST);
-		total.add(right,BorderLayout.EAST);
-		total.add(down,BorderLayout.SOUTH);
-		total.add(middle,BorderLayout.CENTER);
+		total.add(left, BorderLayout.WEST);
+		total.add(right, BorderLayout.EAST);
+		total.add(down, BorderLayout.SOUTH);
+		total.add(middle, BorderLayout.CENTER);
 		total.add(up, BorderLayout.NORTH);
-		
+
 		//Panel right
 		cbb_playList = new JComboBox<String>();
 		lb_list = new JList<String>();
 		this.generateCbbPlaylist();
 		cbb_playList.addItemListener(this);
 		cbb_playList.addActionListener(this);
-		
+
 		right.setLayout(new BorderLayout());
 		cbb_playList.setPreferredSize(new Dimension(200, 30));
 		cbb_playList.setEditable(true);
 		right.add(cbb_playList, BorderLayout.NORTH);
 		right.add(lb_list, BorderLayout.CENTER);
-		
+
 		//Panel down
 		btn_play = new JButton("Play");
 		btn_stop = new JButton("Stop");
@@ -129,29 +127,29 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		btn_previous = new JButton("Previous");
 		btn_repeat = new JButton("Repeat");
 		btn_random = new JButton("Random");
-		
+
 		btn_play.addActionListener(this);
 		btn_stop.addActionListener(this);
 		btn_next.addActionListener(this);
 		btn_previous.addActionListener(this);
 		btn_random.addActionListener(this);
 		btn_repeat.addActionListener(this);
-		
+
 		down.add(btn_repeat);
 		down.add(btn_random);
 		down.add(btn_previous);
 		down.add(btn_stop);
 		down.add(btn_play);
 		down.add(btn_next);
-		
+
 		generateTable();
-		
+
 		//Panel left
 		this.createTree();
-		tree.setPreferredSize(new Dimension(200,0));
-		left.add(new JScrollPane(tree),BorderLayout.CENTER);
+		tree.setPreferredSize(new Dimension(200, 0));
+		left.add(new JScrollPane(tree), BorderLayout.CENTER);
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
@@ -173,7 +171,6 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			controller.stop();
 		}
 		else if (e.getSource() == cbb_playList) {
-			
 		}
 		else if (e.getSource() == mi_chooseFolder) {
 			JFileChooser fc = new JFileChooser();
@@ -182,18 +179,18 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath());
 		}
 	}
-	
-	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children){
-		for(int i = 0; i < children.size(); i++){
+
+	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children) {
+		for (int i = 0 ; i < children.size() ; i++) {
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(children.get(i));
 			parent.add(node);
 		}
 	}
-	
-	public void createTree(){
+
+	public void createTree() {
 		//Noeaud Files
 		root = new DefaultMutableTreeNode("List of files");
-		
+
 		//Movie
 		rootMovie = new DefaultMutableTreeNode("Movies");
 		DefaultMutableTreeNode actors = new DefaultMutableTreeNode("Actor");
@@ -208,7 +205,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		rootMovie.add(actors);
 		rootMovie.add(directors);
 		rootMovie.add(sorts);
-		
+
 		//Song
 		rootSong = new DefaultMutableTreeNode("Song");
 		DefaultMutableTreeNode artists = new DefaultMutableTreeNode("Artist");
@@ -229,32 +226,42 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		tree = new JTree(treeModel);
 		tree.addMouseListener(this);
 		DefaultMutableTreeNode currentNode = root.getNextNode();
-		do {			
-			if(currentNode.getLevel() == 1)
-			{
+		do {
+			if (currentNode.getLevel() == 1) {
 				tree.expandPath(new TreePath(currentNode.getPath()));
 			}
 			currentNode = currentNode.getNextNode();
-		} while (currentNode != null);
+		}
+		while (currentNode != null);
 	}
-	
-	public static void main(String args[]){
-		Database.createDatabase("BddSonVideo.sql");
+
+	public static void main(String args[]) {
+		try {
+			Database.createDatabase("BddSonVideo.sql");
+		}
+		catch (MonException ex) {
+			JOptionPane.showMessageDialog(null, ex.getMessage());
+		}
 		WindowMedia windowMedia = new WindowMedia();
 		windowMedia.setVisible(true);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		//this.updatePlayList();
-		this.generateTable();
+		if (arg instanceof MonException) {
+			MonException ex = (MonException) arg;
+			JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+		else {
+			this.updatePlayList();
+			this.generateTable();
+		}
 	}
-	
-	public void updatePlayList()
-	{
+
+	public void updatePlayList() {
 		lb_list.removeAll();
 		DefaultListModel<String> data = new DefaultListModel<String>();
-		for (Iterator<Media> it = controller.getCurrentPlayList().iterator(); it.hasNext();) {
+		for (Iterator<Media> it = controller.getCurrentPlayList().iterator() ; it.hasNext() ;) {
 			data.addElement(it.next().getTitle());
 		}
 		lb_list.setModel(data);
@@ -266,11 +273,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			controller.updatePlayList(cbb_playList.getSelectedItem().toString());
 		}
 	}
-	
-	public void generateCbbPlaylist(){
+
+	public void generateCbbPlaylist() {
 		cbb_playList.addItem("");
 		ArrayList<PlayList> playlists = controller.getAllPlaylist();
-		for(int i = 0; i < playlists.size() ; i++){
+		for (int i = 0 ; i < playlists.size() ; i++) {
 			cbb_playList.addItem(playlists.get(i).getName());
 		}
 	}
@@ -290,32 +297,32 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent me) {
-		if(me.getSource() == tree) {
+		if (me.getSource() == tree) {
 			TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
-			if (tp != null){ // test si on clique sur un élément
-				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)tp.getLastPathComponent();
+			if (tp != null) { // test si on clique sur un élément
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
 				String parent = selectedNode.getParent().toString();
 				controller.fileChanged(selectedNode.toString(), parent);
 			}
 		}
 	}
-	
-	public void generateTable(){
-        String[] entetes = {"Title", "Release Date", "Length", "Path"};
+
+	public void generateTable() {
+		String[] entetes = {"Title", "Release Date", "Length", "Path"};
 		Object[][] donnees = {};
-		if(controller.getSelection()!=null){
+		if (controller.getSelection() != null) {
 			donnees = new Object[controller.getSelection().size()][4];
-			for(int i = 0; i < controller.getSelection().size(); i++){
-				donnees[i][0]= controller.getSelection().get(i).getTitle();
-				donnees[i][1]= controller.getSelection().get(i).getDate();
-				donnees[i][2]= controller.getSelection().get(i).getLength();
-				donnees[i][3]= controller.getSelection().get(i).getPath();
+			for (int i = 0 ; i < controller.getSelection().size() ; i++) {
+				donnees[i][0] = controller.getSelection().get(i).getTitle();
+				donnees[i][1] = controller.getSelection().get(i).getDate();
+				donnees[i][2] = controller.getSelection().get(i).getLength();
+				donnees[i][3] = controller.getSelection().get(i).getPath();
 			}
 		}
-        tableau = new JTable(donnees, entetes);
+		tableau = new JTable(donnees, entetes);
 		tableau.setAutoCreateRowSorter(true);
 		middle.removeAll();
 		middle.add(new JScrollPane(tableau), BorderLayout.CENTER);
