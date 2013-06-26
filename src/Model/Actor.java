@@ -1,11 +1,7 @@
 
 package Model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -17,9 +13,12 @@ import java.util.logging.Logger;
  * @author Quentin
  */
 public class Actor extends Person{
-	
-	
-	public ArrayList<String> actorsList(){
+	/**
+	 * Renvoi la liste des acteurs présents dans la base
+	 * @return Arraylist des acteurs
+	 * @throws MonException 
+	 */
+	public ArrayList<String> actorsList() throws MonException{
 		
 		return this.generateList("Actor");
 	}

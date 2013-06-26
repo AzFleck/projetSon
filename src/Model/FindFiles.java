@@ -22,7 +22,7 @@ public class FindFiles {
 		this.pathOfFiles = new ArrayList<String>();
 	}
 	
-	public void getAllFiles(String pathOfDirectory) {
+	public void getAllFiles(String pathOfDirectory) throws MonException {
 		String[] list;
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> pathOfFile = new ArrayList<String>();
@@ -86,7 +86,7 @@ public class FindFiles {
 		return pathOfFile;
 	}
 	
-	public void insertAllFiles()
+	public void insertAllFiles() throws MonException
 	{
 		try {
 			int lastId = getMaxIdFile() + 1;
@@ -105,7 +105,7 @@ public class FindFiles {
 		}
 	}
 	
-	public int getMaxIdFile(){
+	public int getMaxIdFile() throws MonException{
 		String req = "Select max(idFile) from file";
 		ResultSet result = Database.read(req);
 		int maxId = -1;
@@ -120,7 +120,7 @@ public class FindFiles {
 		return maxId;
 	}
 	
-	public boolean checkExistentFile(String nameOfFile) {
+	public boolean checkExistentFile(String nameOfFile) throws MonException {
 		boolean result = false;
 		try {
 			ResultSet rs = Database.read("SELECT count(idFile) FROM File WHERE Title = '"+ nameOfFile +"'");

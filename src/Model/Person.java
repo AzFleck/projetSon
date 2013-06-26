@@ -51,7 +51,13 @@ public class Person {
 		this.prenom = prenom;
 	}
 	
-	protected ArrayList<String> generateList(String type){
+	/**
+	 * Renvoi la list des acteurs ou des producteurs ou des artistes en fonction du paramètre
+	 * @param type Actor / Director / Artist
+	 * @return Liste des personnes correspondant à la demande
+	 * @throws MonException 
+	 */
+	protected ArrayList<String> generateList(String type) throws MonException{
 		String req = "Select LastName, FirstName from person p"
 					 + " join persontype pt on pt.idperson = p.idperson"
 					 + " join \"type\" t on pt.idtype = t.idtype"
@@ -60,13 +66,13 @@ public class Person {
 		ArrayList<String> persons = new ArrayList<String>();
 		try {
 			while(result.next()){
-				String nom = result.getString(1);
-				String prenom = result.getString(2);
-				persons.add(prenom+" "+nom);
+				String lastname = result.getString(1);//nom
+				String firstname = result.getString(2);//prenom
+				persons.add(firstname+" "+lastname);
 			}
 		}
 		catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new MonException(ex.getMessage());
 		}
 		finally{
 			Database.disconnect();

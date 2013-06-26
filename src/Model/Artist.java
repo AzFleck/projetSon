@@ -11,9 +11,12 @@ import java.util.ArrayList;
  * @author Quentin
  */
 public class Artist extends Person{
-		
-	
-	public ArrayList<String> artistsList(){
+	/**
+	 * Renvoi la liste des artistes présents dans la base
+	 * @return Arraylist des artistes
+	 * @throws MonException 
+	 */
+	public ArrayList<String> artistsList() throws MonException{
 		return this.generateList("Artist");
 	}
 	
