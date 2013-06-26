@@ -57,7 +57,7 @@ public class Controller extends Observable {
 		this.setParentSelectedItem(parentItem);
 		this.changeStatement();
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers("Middle");
 	}
 
 	public void changeStatement() {
@@ -264,7 +264,7 @@ public class Controller extends Observable {
 		}
 		this.setCurrentPlayList(p.getMedias());
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers("Playlist");
 	}
 
 	public ArrayList<PlayList> getAllPlaylist() {
