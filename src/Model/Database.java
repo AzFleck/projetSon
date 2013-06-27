@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,10 +23,18 @@ public class Database {
 
 	private static Connection connection;
 
-	public static Connection connect(String dbName) throws MonException {
+	public static Connection getConnection() throws MonException {
 		try {
-			Class.forName("org.sqlite.JDBC");
-			return DriverManager.getConnection("jdbc:sqlite:" + dbName);
+			if (connection instanceof Connection) {
+				if (connection.isValid(1)) {
+					return connection;
+				} else {
+					return null;
+				}
+			} else {
+				Class.forName("org.sqlite.JDBC");
+				return DriverManager.getConnection("jdbc:sqlite:BddSonVideo.db");
+			}
 		} catch (SQLException e) {
 			throw new MonException(e.getMessage());
 		} catch (ClassNotFoundException ex) {
@@ -34,8 +44,7 @@ public class Database {
 
 	public static ResultSet read(String request) throws MonException {
 		try {
-			connection = Database.connect("BddSonVideo.db");
-			Statement requete = connection.createStatement();
+			Statement requete = Database.getConnection().createStatement();
 			ResultSet result = requete.executeQuery(request);
 			return result;
 		} catch (Exception e) {
@@ -45,11 +54,8 @@ public class Database {
 
 	public static void write(String request) throws MonException {
 		try {
-			connection = Database.connect("BddSonVideo.db");
-			Statement requete = connection.createStatement();
-			System.out.println("ici");
+			Statement requete = Database.getConnection().createStatement();
 			requete.executeUpdate(request);
-			System.out.println("là");
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
 		}
@@ -57,7 +63,8 @@ public class Database {
 
 	public static void disconnect() throws MonException {
 		try {
-			connection.close();
+			Database.getConnection().close();
+			connection = null;
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
 		}
@@ -66,22 +73,22 @@ public class Database {
 	public static void createDatabase(String file) throws MonException {
 		File f = new File("BddSonVideo.db");
 		//methode pour tester l'existence
-		if ( !f.exists() ) {
+		if (!f.exists()) {
 			try {
 				BufferedReader sql;
 				String requestSql = "";
 
-				sql = new BufferedReader(new FileReader("BddMysql/"+file));
+				sql = new BufferedReader(new FileReader("BddMysql/" + file));
 				while (sql.ready()) {
-					requestSql += sql.readLine();				
+					requestSql += sql.readLine();
 				}
 				Database.write(requestSql);
-				
+
 				requestSql = "";
 
 				sql = new BufferedReader(new FileReader("BddMysql/Insert.sql"));
 				while (sql.ready()) {
-					requestSql += sql.readLine();				
+					requestSql += sql.readLine();
 				}
 				Database.write(requestSql);
 			} catch (Exception e) {
