@@ -178,4 +178,5 @@ public class Media {
 		String req = "Select idmusic from music where idalbum = "+numAlbum;
 		return this.getMediasBySomething(req);
 	}
+	
 }

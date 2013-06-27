@@ -280,7 +280,7 @@ public class Controller extends Observable {
 		return playlists;
 	}
 
-	public void getAllFiles(String pathOfDirectory) {
+	public void getAllFiles(String pathOfDirectory) throws MonException {
 		FindFiles files = new FindFiles();
 		try {
 			files.getAllFiles(pathOfDirectory);
