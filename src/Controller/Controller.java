@@ -299,9 +299,9 @@ public class Controller extends Observable {
 		return playlists;
 	}
 
-	public void getAllFiles(String pathOfDirectory) throws MonException {
-		FindFiles files = new FindFiles();
+	public void getAllFiles(String pathOfDirectory) {
 		try {
+			FindFiles files = new FindFiles();
 			files.getAllFiles(pathOfDirectory);
 		} catch (MonException ex) {
 			this.setChanged();
