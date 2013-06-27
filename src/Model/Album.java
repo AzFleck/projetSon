@@ -57,9 +57,9 @@ public class Album {
 	 */
 	public ArrayList<String> albumsList() throws MonException{
 		String req = "Select libelle from album";
-		ResultSet result = Database.read(req);
 		ArrayList<String> album = new ArrayList<String>();
 		try {
+			ResultSet result = Database.read(req);
 			while(result.next()){
 				album.add(result.getString(1));
 			}
@@ -98,8 +98,8 @@ public class Album {
 	 * @param requête qui renvoi l'id, le nom et la date de l'album désiré.
 	 */
 	private void createAlbumReq(String req) throws MonException{
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			result.next();
 			this.setIdAlbum(result.getInt(1));
 			this.setLibelle(result.getString(2));
@@ -121,8 +121,8 @@ public class Album {
 		String req = "Select idmusic from music where idalbum = " + idalbum;
 		ArrayList<Media> medias = new ArrayList<Media>();
 		Media m = new Media();
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				medias.add(m.getMediaById(result.getInt(1)));
 			}

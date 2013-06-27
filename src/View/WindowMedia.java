@@ -18,9 +18,13 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -154,25 +158,17 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
 			controller.play();
-		}
-		else if (e.getSource() == btn_next) {
+		} else if (e.getSource() == btn_next) {
 			controller.next();
-		}
-		else if (e.getSource() == btn_previous) {
+		} else if (e.getSource() == btn_previous) {
 			controller.previous();
-		}
-		else if (e.getSource() == btn_random) {
+		} else if (e.getSource() == btn_random) {
 			controller.random();
-		}
-		else if (e.getSource() == btn_repeat) {
+		} else if (e.getSource() == btn_repeat) {
 			controller.repeat();
-		}
-		else if (e.getSource() == btn_stop) {
+		} else if (e.getSource() == btn_stop) {
 			controller.stop();
-		}
-		else if (e.getSource() == cbb_playList) {
-		}
-		else if (e.getSource() == mi_chooseFolder) {
+		} else if (e.getSource() == mi_chooseFolder) {
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
@@ -181,7 +177,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	}
 
 	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children) {
-		for (int i = 0 ; i < children.size() ; i++) {
+		for (int i = 0; i < children.size(); i++) {
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(children.get(i));
 			parent.add(node);
 		}
@@ -231,15 +227,13 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				tree.expandPath(new TreePath(currentNode.getPath()));
 			}
 			currentNode = currentNode.getNextNode();
-		}
-		while (currentNode != null);
+		} while (currentNode != null);
 	}
 
 	public static void main(String args[]) {
 		try {
 			Database.createDatabase("BddSonVideo.sql");
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			JOptionPane.showMessageDialog(null, ex.getMessage());
 		}
 		WindowMedia windowMedia = new WindowMedia();
@@ -250,19 +244,23 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public void update(Observable o, Object arg) {
 		if (arg instanceof MonException) {
 			MonException ex = (MonException) arg;
-			JOptionPane.showMessageDialog(this,ex.getMessage());
-		}
-		else {
-			this.updatePlayList();
-			this.generateTable();
+			JOptionPane.showMessageDialog(this, ex.getMessage());
+		} else if (arg instanceof String) {
+			String s = (String) arg;
+			if (s.equals("Playlist")) {
+				this.updatePlayList();
+			} else if (s.equals("Middle")) {
+				this.generateTable();
+			}
 		}
 	}
 
 	public void updatePlayList() {
 		lb_list.removeAll();
 		DefaultListModel<String> data = new DefaultListModel<String>();
-		for (Iterator<Media> it = controller.getCurrentPlayList().iterator() ; it.hasNext() ;) {
-			data.addElement(it.next().getTitle());
+		ArrayList<Media> medias = controller.getCurrentPlayList().getMedias();
+		for (int i = 0; i < medias.size(); i++) {
+			data.addElement(medias.get(i).getTitle());
 		}
 		lb_list.setModel(data);
 	}
@@ -270,15 +268,30 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource() == cbb_playList) {
-			controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+			String playlistName = cbb_playList.getSelectedItem().toString();
+			if (controller.playlistExist(playlistName)) {
+				controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+			} else {
+				controller.savePlaylist(playlistName);
+				this.generateCbbPlaylist();
+			}
 		}
 	}
 
 	public void generateCbbPlaylist() {
+		cbb_playList.removeAllItems();
 		cbb_playList.addItem("");
-		ArrayList<PlayList> playlists = controller.getAllPlaylist();
-		for (int i = 0 ; i < playlists.size() ; i++) {
-			cbb_playList.addItem(playlists.get(i).getName());
+		HashMap<String, PlayList> playlists = controller.getAllPlaylist();
+		ArrayList<String> arrayPlaylists = new ArrayList<String>();
+		Set cles = playlists.keySet();
+		Iterator it = cles.iterator();
+		while (it.hasNext()) {
+			String cle = (String) it.next();
+			arrayPlaylists.add(cle);
+		}
+		Collections.sort(arrayPlaylists);
+		for (int i = 0; i < arrayPlaylists.size(); i++) {
+			cbb_playList.addItem(arrayPlaylists.get(i));
 		}
 	}
 
@@ -315,7 +328,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		Object[][] donnees = {};
 		if (controller.getSelection() != null) {
 			donnees = new Object[controller.getSelection().size()][4];
-			for (int i = 0 ; i < controller.getSelection().size() ; i++) {
+			for (int i = 0; i < controller.getSelection().size(); i++) {
 				donnees[i][0] = controller.getSelection().get(i).getTitle();
 				donnees[i][1] = controller.getSelection().get(i).getDate();
 				donnees[i][2] = controller.getSelection().get(i).getLength();

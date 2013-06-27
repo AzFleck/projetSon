@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author Quentin
  */
 public class Media {
+
 	protected int idFile;
 	protected String title; //titre
 	protected String date; //date de sortie
@@ -79,14 +80,15 @@ public class Media {
 
 	/**
 	 * Crée la liste des genres du type passé en param
+	 *
 	 * @param type : 1 pour film et 2 pour musiques
 	 * @return liste des genres demandés
 	 */
 	protected ArrayList<String> genresList(int type) throws MonException {
 		String req = "Select libelle from sort where \"type\" = " + type;
-		ResultSet result = Database.read(req);
 		ArrayList<String> sorts = new ArrayList<String>();
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				sorts.add(result.getString(1));
 			}
@@ -97,11 +99,14 @@ public class Media {
 		}
 		return sorts;
 	}
+
 	/**
-	 * Permet d'attribuer un resultset dans un média (récupère les libelles des genres)
+	 * Permet d'attribuer un resultset dans un média (récupère les libelles des
+	 * genres)
+	 *
 	 * @param ResultSet
 	 */
-	public void attributeMedia(ResultSet rs) throws MonException{
+	public void attributeMedia(ResultSet rs) throws MonException {
 		try {
 			this.setTitle(rs.getString("Title"));
 			this.setDate(rs.getString("ReleaseDate"));
@@ -114,55 +119,65 @@ public class Media {
 			throw new MonException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Renvoi les libelles de genres qui correspondent au film
+	 *
 	 * @param idfile l'id du média dont on veut les genres
 	 * @return ArrayList des nom des genres
 	 */
-	public ArrayList<String> getLibellesSortsOfFile(int idfile) throws MonException{
+	public ArrayList<String> getLibellesSortsOfFile(int idfile) throws MonException {
 		String req = "Select libelle from sort s "
 				+ "join filesort fs on fs.idsort=s.idsort where idfile = " + idfile;
-		ResultSet result = Database.read(req);
 		ArrayList<String> genres = new ArrayList<String>();
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				genres.add(result.getString(1));
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
+		} finally {
+			Database.disconnect();
 		}
 		return genres;
 	}
-	
+
 	/**
 	 * Crée un média grâce à son id
+	 *
 	 * @param idmedia
 	 * @return Le média crée
-	 * @throws MonException 
+	 * @throws MonException
 	 */
-	public Media getMediaById(int idmedia) throws MonException{
+	public Media getMediaById(int idmedia) throws MonException {
 		String req = "Select * from file where idfile = " + idmedia;
-		ResultSet rs = Database.read(req);
 		Media med = new Media();
-		med.attributeMedia(rs);
+		try {
+			ResultSet rs = Database.read(req);
+			med.attributeMedia(rs);
+		} catch (MonException ex) {
+			throw ex;
+		} finally {
+			Database.disconnect();
+		}
 		return med;
 	}
-	
-	public ArrayList<Media> getMediasByPerson(int idperson) throws MonException{
+
+	public ArrayList<Media> getMediasByPerson(int idperson) throws MonException {
 		String req = "Select idfile from personfile where idperson = " + idperson;
 		return this.getMediasBySomething(req);
 	}
-	
-	public ArrayList<Media> getMediasBySort(int idsort) throws MonException{
+
+	public ArrayList<Media> getMediasBySort(int idsort) throws MonException {
 		String req = "Select idfile from filesort where idsort = " + idsort;
 		return this.getMediasBySomething(req);
 	}
-	
-	protected ArrayList<Media> getMediasBySomething(String req) throws MonException{
+
+	protected ArrayList<Media> getMediasBySomething(String req) throws MonException {
 		ArrayList<Media> medias = new ArrayList<Media>();
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				medias.add(this.getMediaById(result.getInt(1)));
 			}
@@ -173,9 +188,9 @@ public class Media {
 		}
 		return medias;
 	}
-	
-	public ArrayList<Media> getMediaInAlbum(int numAlbum) throws MonException{
-		String req = "Select idmusic from music where idalbum = "+numAlbum;
+
+	public ArrayList<Media> getMediaInAlbum(int numAlbum) throws MonException {
+		String req = "Select idmusic from music where idalbum = " + numAlbum;
 		return this.getMediasBySomething(req);
 	}
 	

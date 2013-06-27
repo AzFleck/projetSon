@@ -7,6 +7,7 @@ package Model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -49,7 +50,9 @@ public class PlayList {
 	}
 
 	/**
-	 * Permet de créer un objet playlist telle qu'elle est dans la base à partir de son nom
+	 * Permet de créer un objet playlist telle qu'elle est dans la base à partir
+	 * de son nom
+	 *
 	 * @param name playlist
 	 */
 	public void createPlaylist(String name) throws MonException {
@@ -58,8 +61,10 @@ public class PlayList {
 	}
 
 	/**
-	 * Permet de créer un objet playlist telle qu'elle est dans la base à partir de son id
-	 * @param idplaylist 
+	 * Permet de créer un objet playlist telle qu'elle est dans la base à partir
+	 * de son id
+	 *
+	 * @param idplaylist
 	 */
 	public void createPlaylist(int id) throws MonException {
 		String req = "Select * from playlist where idplaylist = " + id;
@@ -67,44 +72,44 @@ public class PlayList {
 	}
 
 	/**
-	 * Utilitaire auquel on envoi une requête qui obtient l'id puis le nom de la playlist
+	 * Utilitaire auquel on envoi une requête qui obtient l'id puis le nom de la
+	 * playlist
+	 *
 	 * @param requête qui renvoi l'id et le nom de la playlist désiré.
 	 */
 	private void createPlaylistReq(String req) throws MonException {
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			result.next();
 			this.setId(result.getInt(1));
 			this.setName(result.getString(2));
 			this.setMedias(this.getMediasByPlaylist(result.getInt(1)));
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		}
-		finally {
+		} finally {
 			Database.disconnect();
 		}
 	}
 
 	/**
-	 * Permet de créer la liste de toutes les playlists présentes dans la base de données
+	 * Permet de créer la liste de toutes les playlists présentes dans la base
+	 * de données
+	 *
 	 * @return ArrayList de Playlist
 	 */
-	public ArrayList<PlayList> getAllPlaylist() throws MonException {
-		ArrayList<PlayList> playlists = new ArrayList<PlayList>();
+	public HashMap<String, PlayList> getAllPlaylist() throws MonException {
+		HashMap<String, PlayList> playlists = new HashMap<String, PlayList>();
 		String req = "Select idplaylist from playlist";
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				PlayList pl = new PlayList();
 				pl.createPlaylist(result.getInt(1));
-				playlists.add(pl);
+				playlists.put(pl.getName(), pl);
 			}
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		}
-		finally {
+		} finally {
 			Database.disconnect();
 		}
 		return playlists;
@@ -112,20 +117,19 @@ public class PlayList {
 
 	/**
 	 * Renvoi l'id maximum de la playlist
+	 *
 	 * @return id max dans la base
 	 */
 	public int getMaxIdPlayList() throws MonException {
 		String req = "Select max(idplaylist) from playlist";
-		ResultSet result = Database.read(req);
 		int maxId = -1;
 		try {
+			ResultSet result = Database.read(req);
 			result.next();
 			maxId = result.getInt(1);
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		}
-		finally {
+		} finally {
 			Database.disconnect();
 		}
 		return maxId;
@@ -138,84 +142,131 @@ public class PlayList {
 	public void savePlaylist() throws MonException {
 		if (this.getMedias() == null) {
 			throw new MonException("Il faut renseigner les médias pour créer une playlist");
-		}
-		else if (this.getName() == null) {
+		} else if (this.getName() == null) {
 			throw new MonException("Il faut renseigner le nom pour créer une playlist");
-		}
-		else {
+		} else {
 			if (this.getId() == 0) {
 				this.insertPlaylist();
-			}
-			else {
-				if(this.playlistExist(this.getId())){
+			} else {
+				if (this.playlistExist(this.getId())) {
 					this.updatePlaylist();
-				}
-				else{
-					this.setId(this.getMaxIdPlayList()+1);// par soucis de cohérence
+				} else {
+					this.setId(this.getMaxIdPlayList() + 1);// par soucis de cohérence
 					this.insertPlaylist();
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Fais l'insertion dans la base d'une nouvelle playlist
 	 */
-	private void insertPlaylist() throws MonException{
+	private void insertPlaylist() throws MonException {
 		// Insertion dans la table Playlist
 		int newIdPlaylist = this.getMaxIdPlayList() + 1;
-		String reqPlaylist = "insert into playlist values(" + newIdPlaylist + ", " + this.getName() + ")";
-		Database.write(reqPlaylist);
+		this.setId(newIdPlaylist);
+		String reqPlaylist = "insert into playlist values(" + newIdPlaylist + ", '" + this.getName() + "');";
+		System.out.println(reqPlaylist);
+		try {
+			Database.write(reqPlaylist);
+		} catch (MonException e) {
+			throw e;
+		} finally {
+			Database.disconnect();
+		}
 		this.insertLiaison(newIdPlaylist);
 	}
-	
+
 	/**
 	 * Fais l'insertion des différentes liaisons entre médias et playlist
+	 *
 	 * @param idplaylist
-	 * @throws MonException 
+	 * @throws MonException
 	 */
-	private void insertLiaison(int idplaylist) throws MonException{
-		String reqLiaison = "insert into filePlaylist values ";
-		for (int i = 0 ; i < this.getMedias().size() ; i++) {
+	private void insertLiaison(int idplaylist) throws MonException {
+		String reqLiaison = "";
+		for (int i = 0; i < this.getMedias().size(); i++) {
+			reqLiaison += "insert into filePlaylist values ";
 			int idmedia = this.getMedias().get(i).getIdFile();
-			reqLiaison += "(" + idmedia + "," + idplaylist + "),";
+			reqLiaison += "(" + idmedia + "," + idplaylist + "); ";
 		}
 		//Suppression de la dernière virgule
 		reqLiaison = reqLiaison.substring(0, reqLiaison.length() - 1);
-		Database.write(reqLiaison);
+		try {
+			Database.write(reqLiaison);
+		} catch (MonException e) {
+			throw e;
+		} finally {
+			Database.disconnect();
+		}
 	}
-	
+
 	/**
 	 * Fais l'update dans la base d'une nouvelle playlist
 	 */
-	private void updatePlaylist() throws MonException{
+	private void updatePlaylist() throws MonException {
 		// Insertion dans la table Playlist
 		String reqPlaylist = "update playlist set name = " + this.getName() + " where idplaylist = " + this.getId();
-		Database.write(reqPlaylist);
+		try {
+			Database.write(reqPlaylist);
+		} catch (MonException e) {
+			throw e;
+		} finally {
+			Database.disconnect();
+		}
 		// Insertion pour la liaison entre les médias et la playlist
 		String reqLiaison = "delete from filePlaylist where idplaylist = " + this.getId();
-		Database.write(reqLiaison);
+		try {
+			Database.write(reqLiaison);
+		} catch (MonException e) {
+			throw e;
+		} finally {
+			Database.disconnect();
+		}
 		this.insertLiaison(this.getId());
 	}
-	
+
 	/**
 	 * Renvoi true si la playlist existe déjà dans la base
+	 *
 	 * @param idplaylist
 	 * @return true si elle existe, false si elle n'existe pas
-	 * @throws MonException 
+	 * @throws MonException
 	 */
 	public boolean playlistExist(int idplaylist) throws MonException {
 		boolean result = false;
 		try {
-			ResultSet rs = Database.read("SELECT count(*) FROM playlist WHERE idplaylist = '"+ idplaylist +"'");
+			ResultSet rs = Database.read("SELECT count(*) FROM playlist WHERE idplaylist = '" + idplaylist + "'");
 			rs.next();
 			if (rs.getInt(1) != 0) {
 				result = true;
 			}
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
+		} finally {
+			Database.disconnect();
 		}
-		finally {
+		return result;
+	}
+
+	/**
+	 * Renvoi true si la playlist existe déjà dans la base
+	 *
+	 * @param playlist's name
+	 * @return true si elle existe, false si elle n'existe pas
+	 * @throws MonException
+	 */
+	public boolean playlistExist(String name) throws MonException {
+		boolean result = false;
+		try {
+			ResultSet rs = Database.read("SELECT count(*) FROM playlist WHERE name = '" + name + "'");
+			rs.next();
+			if (rs.getInt(1) != 0) {
+				result = true;
+			}
+		} catch (Exception e) {
+			throw new MonException(e.getMessage());
+		} finally {
 			Database.disconnect();
 		}
 		return result;
@@ -223,6 +274,7 @@ public class PlayList {
 
 	/**
 	 * Permet de récupérer les médias d'une playlist à l'aide de son id
+	 *
 	 * @param idplaylist
 	 * @return médias dans la playlist
 	 */
@@ -230,16 +282,14 @@ public class PlayList {
 		String req = "Select idfile from fileplaylist where idplaylist = " + idplaylist;
 		ArrayList<Media> medias = new ArrayList<Media>();
 		Media m = new Media();
-		ResultSet result = Database.read(req);
 		try {
+			ResultSet result = Database.read(req);
 			while (result.next()) {
 				medias.add(m.getMediaById(result.getInt(1)));
 			}
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		}
-		finally {
+		} finally {
 			Database.disconnect();
 		}
 		return medias;
