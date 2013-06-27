@@ -250,29 +250,6 @@ public class PlayList {
 	}
 
 	/**
-	 * Renvoi true si la playlist existe déjà dans la base
-	 *
-	 * @param playlist's name
-	 * @return true si elle existe, false si elle n'existe pas
-	 * @throws MonException
-	 */
-	public boolean playlistExist(String name) throws MonException {
-		boolean result = false;
-		try {
-			ResultSet rs = Database.read("SELECT count(*) FROM playlist WHERE name = '" + name + "'");
-			rs.next();
-			if (rs.getInt(1) != 0) {
-				result = true;
-			}
-		} catch (Exception e) {
-			throw new MonException(e.getMessage());
-		} finally {
-			Database.disconnect();
-		}
-		return result;
-	}
-
-	/**
 	 * Permet de récupérer les médias d'une playlist à l'aide de son id
 	 *
 	 * @param idplaylist

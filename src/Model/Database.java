@@ -86,6 +86,8 @@ public class Database {
 				Database.write(requestSql);
 			} catch (Exception e) {
 				throw new MonException(e.getMessage());
+			} finally {
+				Database.disconnect();
 			}
 		}
 	}
