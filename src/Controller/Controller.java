@@ -24,11 +24,11 @@ import java.util.Observable;
  */
 public class Controller extends Observable {
 
-	private String currentPlayList;
-	private String parentSelectedItem;
-	private String selectedItem;
-	private ArrayList<Media> selection;
-	private HashMap<String, PlayList> playlists;
+	private String currentPlayList; //nom de la playlist en cours
+	private String parentSelectedItem; //arborescence à gauche
+	private String selectedItem; //arborescence à gauche
+	private ArrayList<Media> selection; // la sélection en cours
+	private HashMap<String, PlayList> playlists; // toutes les playlists
 
 	public Controller() {
 		this.currentPlayList = null;
@@ -259,15 +259,14 @@ public class Controller extends Observable {
 			PlayList pl = new PlayList();
 			pl.setName(name);
 			pl.setMedias(selection);
-			System.out.println(pl.getName().toString());
-			System.out.println(pl.getMedias().toString());
-//			try {
-				//pl.savePlaylist();
-				playlists.put(name,pl);
-//			} catch (MonException ex) {
-//				this.setChanged();
-//				this.notifyObservers(ex);
-//			}
+			try {
+				int max = pl.getMaxIdPlayList();
+				pl.savePlaylist();
+				this.getPlaylists().put(name,pl);
+			} catch (MonException ex) {
+				this.setChanged();
+				this.notifyObservers(ex);
+			}
 		}
 	}
 

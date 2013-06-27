@@ -99,12 +99,14 @@ public class PlayList {
 	 */
 	public HashMap<String, PlayList> getAllPlaylist() throws MonException {
 		HashMap<String, PlayList> playlists = new HashMap<String, PlayList>();
-		String req = "Select idplaylist from playlist";
+		String req = "Select * from playlist";
 		try {
 			ResultSet result = Database.read(req);
 			while (result.next()) {
 				PlayList pl = new PlayList();
-				pl.createPlaylist(result.getInt(1));
+				pl.setId(result.getInt(1));
+				pl.setName(result.getString(2));
+				pl.setMedias(this.getMediasByPlaylist(result.getInt(1)));
 				playlists.put(pl.getName(), pl);
 			}
 		} catch (SQLException ex) {
@@ -256,13 +258,19 @@ public class PlayList {
 	 * @return médias dans la playlist
 	 */
 	private ArrayList<Media> getMediasByPlaylist(int idplaylist) throws MonException {
-		String req = "Select idfile from fileplaylist where idplaylist = " + idplaylist;
+		String req = "Select * from file f join fileplaylist fp on f.idfile = fp.idfile where fp.idplaylist = " + idplaylist;
 		ArrayList<Media> medias = new ArrayList<Media>();
-		Media m = new Media();
 		try {
 			ResultSet result = Database.read(req);
 			while (result.next()) {
-				medias.add(m.getMediaById(result.getInt(1)));
+				Media m = new Media();
+				m.setIdFile(result.getInt(1));
+				m.setTitle(result.getString(2));
+				m.setDate(result.getString(3));
+				m.setLength(result.getString(4));
+				m.setPath(result.getString(5));
+				m.setFind(result.getBoolean(6));
+				medias.add(m);
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());

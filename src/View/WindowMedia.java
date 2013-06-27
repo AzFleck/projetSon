@@ -74,6 +74,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private ArrayList<String> albumslist;
 	private JTable tableau;
 	private JPanel middle;
+	private boolean passer_par_listener;
 
 	public WindowMedia() {
 		controller = new Controller();
@@ -266,20 +267,20 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if (e.getSource() == cbb_playList) {
+		if (passer_par_listener && e.getSource() == cbb_playList && e.getStateChange() == ItemEvent.SELECTED) {
 			String playlistName = cbb_playList.getSelectedItem().toString();
 			if (controller.playlistExist(playlistName)) {
 				controller.updatePlayList(cbb_playList.getSelectedItem().toString());
 			} else {
 				controller.savePlaylist(playlistName);
-				//this.generateCbbPlaylist();
+				this.generateCbbPlaylist();
 			}
 		}
 	}
 
 	public void generateCbbPlaylist() {
+		passer_par_listener = false;
 		cbb_playList.removeAllItems();
-		cbb_playList.addItem("");
 		HashMap<String, PlayList> playlists = controller.getAllPlaylist();
 		ArrayList<String> arrayPlaylists = new ArrayList<String>();
 		Set cles = playlists.keySet();
@@ -292,6 +293,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		for (int i = 0; i < arrayPlaylists.size(); i++) {
 			cbb_playList.addItem(arrayPlaylists.get(i));
 		}
+		cbb_playList.setSelectedItem(controller.getCurrentPlayListName());
+		passer_par_listener = true;
+		this.revalidate();
+		this.repaint();
 	}
 
 	@Override
