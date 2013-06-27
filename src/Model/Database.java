@@ -47,9 +47,7 @@ public class Database {
 		try {
 			connection = Database.connect("BddSonVideo.db");
 			Statement requete = connection.createStatement();
-			System.out.println("ici");
 			requete.executeUpdate(request);
-			System.out.println("là");
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
 		}
