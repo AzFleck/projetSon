@@ -52,12 +52,7 @@ public class Database {
 
 	public static void write(String request) throws MonException {
 		try {
-<<<<<<< HEAD
 			Statement requete = Database.getConnection().createStatement();
-=======
-			connection = Database.connect("BddSonVideo.db");
-			Statement requete = connection.createStatement();
->>>>>>> bc350554f7b9209aaef090cc7a5b3fa71b63dcc5
 			requete.executeUpdate(request);
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
