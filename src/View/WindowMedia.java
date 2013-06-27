@@ -18,9 +18,13 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -164,7 +168,6 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			controller.repeat();
 		} else if (e.getSource() == btn_stop) {
 			controller.stop();
-		} else if (e.getSource() == cbb_playList) {
 		} else if (e.getSource() == mi_chooseFolder) {
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -242,12 +245,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		if (arg instanceof MonException) {
 			MonException ex = (MonException) arg;
 			JOptionPane.showMessageDialog(this, ex.getMessage());
-		} else if(arg instanceof String){
+		} else if (arg instanceof String) {
 			String s = (String) arg;
-			if(s.equals("Playlist")){
+			if (s.equals("Playlist")) {
 				this.updatePlayList();
-			}
-			else if(s.equals("Middle")){
+			} else if (s.equals("Middle")) {
 				this.generateTable();
 			}
 		}
@@ -256,8 +258,9 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public void updatePlayList() {
 		lb_list.removeAll();
 		DefaultListModel<String> data = new DefaultListModel<String>();
-		for (int i = 0; i < controller.getCurrentPlayList().size(); i++) {
-			data.addElement(controller.getCurrentPlayList().get(i).getTitle());
+		ArrayList<Media> medias = controller.getCurrentPlayList().getMedias();
+		for (int i = 0; i < medias.size(); i++) {
+			data.addElement(medias.get(i).getTitle());
 		}
 		lb_list.setModel(data);
 	}
@@ -265,15 +268,30 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource() == cbb_playList) {
-			controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+			String playlistName = cbb_playList.getSelectedItem().toString();
+			if (controller.playlistExist(playlistName)) {
+				controller.updatePlayList(cbb_playList.getSelectedItem().toString());
+			} else {
+				controller.savePlaylist(playlistName);
+				this.generateCbbPlaylist();
+			}
 		}
 	}
 
 	public void generateCbbPlaylist() {
+		cbb_playList.removeAllItems();
 		cbb_playList.addItem("");
-		ArrayList<PlayList> playlists = controller.getAllPlaylist();
-		for (int i = 0; i < playlists.size(); i++) {
-			cbb_playList.addItem(playlists.get(i).getName());
+		HashMap<String, PlayList> playlists = controller.getAllPlaylist();
+		ArrayList<String> arrayPlaylists = new ArrayList<String>();
+		Set cles = playlists.keySet();
+		Iterator it = cles.iterator();
+		while (it.hasNext()) {
+			String cle = (String) it.next();
+			arrayPlaylists.add(cle);
+		}
+		Collections.sort(arrayPlaylists);
+		for (int i = 0; i < arrayPlaylists.size(); i++) {
+			cbb_playList.addItem(arrayPlaylists.get(i));
 		}
 	}
 

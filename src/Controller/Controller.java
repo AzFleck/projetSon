@@ -15,6 +15,7 @@ import Model.Media;
 import Model.Movie;
 import Model.Music;
 import Model.PlayList;
+import java.util.HashMap;
 import java.util.Observable;
 
 /**
@@ -23,10 +24,27 @@ import java.util.Observable;
  */
 public class Controller extends Observable {
 
-	private ArrayList<Media> currentPlayList;
+	private String currentPlayList;
 	private String parentSelectedItem;
 	private String selectedItem;
 	private ArrayList<Media> selection;
+	private HashMap<String, PlayList> playlists;
+
+	public Controller() {
+		this.currentPlayList = null;
+		this.parentSelectedItem = null;
+		this.selectedItem = null;
+		this.selection = new ArrayList<Media>();
+		this.playlists = new HashMap<String, PlayList>();
+	}
+
+	public HashMap<String, PlayList> getPlaylists() {
+		return playlists;
+	}
+
+	public void setPlaylists(HashMap<String, PlayList> playlists) {
+		this.playlists = playlists;
+	}
 
 	public ArrayList<Media> getSelection() {
 		return selection;
@@ -63,23 +81,17 @@ public class Controller extends Observable {
 	public void changeStatement() {
 		if (parentSelectedItem.equals("Actor")) {
 			recoverActor();
-		}
-		else if (parentSelectedItem.equals("Director")) {
+		} else if (parentSelectedItem.equals("Director")) {
 			recoverDirector();
-		}
-		else if (parentSelectedItem.equals("Sort")) {
+		} else if (parentSelectedItem.equals("Sort")) {
 			recoverSort();
-		}
-		else if (parentSelectedItem.equals("Artist")) {
+		} else if (parentSelectedItem.equals("Artist")) {
 			recoverArtist();
-		}
-		else if (parentSelectedItem.equals("Style")) {
+		} else if (parentSelectedItem.equals("Style")) {
 			recoverStyle();
-		}
-		else if (parentSelectedItem.equals("Album")) {
+		} else if (parentSelectedItem.equals("Album")) {
 			recoverAlbum();
-		}
-		else if (parentSelectedItem.equals("List of files")) {
+		} else if (parentSelectedItem.equals("List of files")) {
 			recoverListOfFiles();
 		}
 	}
@@ -105,8 +117,7 @@ public class Controller extends Observable {
 			Album a = new Album();
 			a.createAlbum(selectedItem);
 			this.setSelection(m.getMediaInAlbum(a.getIdAlbum()));
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -117,13 +128,11 @@ public class Controller extends Observable {
 			if (selectedItem.equals("Movies")) {
 				Movie m = new Movie();
 				this.setSelection(m.getAllMovie());
-			}
-			else if (selectedItem.equals("Song")) {
+			} else if (selectedItem.equals("Song")) {
 				Music m = new Music();
 				this.setSelection(m.getAllSong());
 			}
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -134,8 +143,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = a.actorsList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -147,8 +155,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = m.sortsList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -160,8 +167,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = d.directorsList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -173,8 +179,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = a.artistsList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -186,8 +191,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = m.stylesList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -199,8 +203,7 @@ public class Controller extends Observable {
 		ArrayList<String> tab = new ArrayList<String>();
 		try {
 			tab = a.albumsList();
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
@@ -231,24 +234,39 @@ public class Controller extends Observable {
 	public void chooseFolder() {
 	}
 
-	public ArrayList<Media> getCurrentPlayList() {
-		return currentPlayList;
+	/**
+	 * Renvoi l'objet playlist en cours
+	 * @return Playlist
+	 */
+	public PlayList getCurrentPlayList() {
+		return playlists.get(this.getCurrentPlayListName());
 	}
 
-	public void setCurrentPlayList(ArrayList<Media> currentPlayList) {
+	public String getCurrentPlayListName() {
+		return this.currentPlayList;
+	}
+
+	public void setCurrentPlayList(String currentPlayList) {
 		this.currentPlayList = currentPlayList;
 	}
 
+	/**
+	 * Permet de sauvegarder la playlist courante ou de l'update
+	 */
 	public void savePlaylist(String name) {
-		if (this.getCurrentPlayList().size() > 0) {
+		if (this.getCurrentPlayList().getMedias().size() > 0) {
+			this.setCurrentPlayList(name);
 			PlayList pl = new PlayList();
-			pl.setMedias(this.getCurrentPlayList());
 			pl.setName(name);
+			pl.setMedias(selection);
+			System.out.println(pl.getName().toString());
+			System.out.println(pl.getMedias().toString());
 			try {
 				pl.savePlaylist();
-			}
-			catch (MonException ex) {
-				ex.printStackTrace();
+				playlists.put(name,pl);
+			} catch (MonException ex) {
+				this.setChanged();
+				this.notifyObservers(ex);
 			}
 		}
 	}
@@ -257,25 +275,26 @@ public class Controller extends Observable {
 		PlayList p = new PlayList();
 		try {
 			p.createPlaylist(namePlayList);
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
-		this.setCurrentPlayList(p.getMedias());
+		this.setCurrentPlayList(p.getName());
+		this.setSelection(this.getCurrentPlayList().getMedias());
 		this.setChanged();
 		this.notifyObservers("Playlist");
 	}
 
-	public ArrayList<PlayList> getAllPlaylist() {
-		PlayList pl = new PlayList();
-		ArrayList<PlayList> playlists = new ArrayList<PlayList>();
-		try {
-			playlists = pl.getAllPlaylist();
-		}
-		catch (MonException ex) {
-			this.setChanged();
-			this.notifyObservers(ex);
+	public HashMap<String, PlayList> getAllPlaylist() {
+		if (this.playlists.isEmpty()) {
+			PlayList pl = new PlayList();
+			try {
+				this.setPlaylists(pl.getAllPlaylist());
+			} catch (MonException ex) {
+				this.setChanged();
+				this.notifyObservers(ex);
+			}
+
 		}
 		return playlists;
 	}
@@ -284,10 +303,21 @@ public class Controller extends Observable {
 		FindFiles files = new FindFiles();
 		try {
 			files.getAllFiles(pathOfDirectory);
-		}
-		catch (MonException ex) {
+		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
 		}
+	}
+
+	public boolean playlistExist(String name) {
+		PlayList p = new PlayList();
+		boolean exist = false;
+		try {
+			exist = p.playlistExist(name);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+		return exist;
 	}
 }

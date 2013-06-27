@@ -62,9 +62,9 @@ public class Person {
 					 + " join persontype pt on pt.idperson = p.idperson"
 					 + " join \"type\" t on pt.idtype = t.idtype"
 					 + " where t.libelle = \""+type+"\"";
-		ResultSet result = Database.read(req);
 		ArrayList<String> persons = new ArrayList<String>();
 		try {
+			ResultSet result = Database.read(req);
 			while(result.next()){
 				String lastname = result.getString(1);//nom
 				String firstname = result.getString(2);//prenom
