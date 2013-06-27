@@ -272,7 +272,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				controller.updatePlayList(cbb_playList.getSelectedItem().toString());
 			} else {
 				controller.savePlaylist(playlistName);
-				this.generateCbbPlaylist();
+				//this.generateCbbPlaylist();
 			}
 		}
 	}

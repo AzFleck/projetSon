@@ -261,13 +261,13 @@ public class Controller extends Observable {
 			pl.setMedias(selection);
 			System.out.println(pl.getName().toString());
 			System.out.println(pl.getMedias().toString());
-			try {
-				pl.savePlaylist();
+//			try {
+				//pl.savePlaylist();
 				playlists.put(name,pl);
-			} catch (MonException ex) {
-				this.setChanged();
-				this.notifyObservers(ex);
-			}
+//			} catch (MonException ex) {
+//				this.setChanged();
+//				this.notifyObservers(ex);
+//			}
 		}
 	}
 
@@ -294,7 +294,6 @@ public class Controller extends Observable {
 				this.setChanged();
 				this.notifyObservers(ex);
 			}
-
 		}
 		return playlists;
 	}
@@ -310,14 +309,6 @@ public class Controller extends Observable {
 	}
 
 	public boolean playlistExist(String name) {
-		PlayList p = new PlayList();
-		boolean exist = false;
-		try {
-			exist = p.playlistExist(name);
-		} catch (MonException ex) {
-			this.setChanged();
-			this.notifyObservers(ex);
-		}
-		return exist;
+		return this.getPlaylists().containsKey(name);
 	}
 }

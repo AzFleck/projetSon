@@ -125,9 +125,9 @@ public class FindFiles {
 
 	public int getMaxIdFile() throws MonException {
 		String req = "Select max(idFile) from file";
-		ResultSet result = Database.read(req);
 		int maxId = -1;
 		try {
+			ResultSet result = Database.read(req);
 			result.next();
 			maxId = result.getInt(1);
 		} catch (SQLException ex) {
