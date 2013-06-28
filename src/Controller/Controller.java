@@ -19,6 +19,8 @@ import View.ImportFile;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -271,7 +273,11 @@ public class Controller extends Observable {
 			this.setCurrentPlayList(name);
 			PlayList pl = new PlayList();
 			pl.setName(name);
-			ArrayList<Media> array = (ArrayList<Media>) this.getSelectionPlaylist().clone();
+			ArrayList<Media> array = new ArrayList<Media>();
+			for (Media item : this.getSelectionPlaylist()) {
+				Media med = item.clone();
+				array.add(med);
+			}
 			pl.setMedias(array);
 			try {
 				pl.savePlaylist();
@@ -292,7 +298,12 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		this.setCurrentPlayList(p.getName());
-		this.setSelectionPlaylist(this.getCurrentPlayList().getMedias());
+		ArrayList<Media> array = new ArrayList<Media>();
+		for (Media item : this.getCurrentPlayList().getMedias()) {
+			Media med = item.clone();
+			array.add(med);
+		}
+		this.setSelectionPlaylist(array);
 		this.setChanged();
 		this.notifyObservers("Playlist");
 	}
