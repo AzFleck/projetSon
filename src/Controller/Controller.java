@@ -14,6 +14,7 @@ import Model.FindFiles;
 import Model.Media;
 import Model.Movie;
 import Model.Music;
+import Model.Person;
 import Model.PlayList;
 import View.ImportFile;
 import java.util.HashMap;
@@ -111,15 +112,39 @@ public class Controller extends Observable {
 	}
 
 	public void recoverActor() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Actor"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverDirector() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Director"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverSort() {
 	}
 
 	public void recoverArtist() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Artist"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverStyle() {
