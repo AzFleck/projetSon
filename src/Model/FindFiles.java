@@ -4,16 +4,25 @@
  */
 package Model;
 
+import com.sun.jna.NativeLibrary;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.filter.MediaFileFilter;
+import uk.co.caprica.vlcj.mrl.FileMrl;
+import uk.co.caprica.vlcj.player.MediaDetails;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 /**
  *
  * @author Fabien
  */
-public class FindFiles extends Observable implements Runnable{
+public class FindFiles extends Observable implements Runnable {
 
 	Integer lastId;
 	String pathOfDirectory;
@@ -25,9 +34,10 @@ public class FindFiles extends Observable implements Runnable{
 		numberOfFile = 0;
 		currentFile = 0;
 		this.pathOfDirectory = pathOfDirectory;
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "C:\\Users\\Fabien\\Documents\\GitHub\\projetSon\\BibliVlcJ\\");
 	}
-	
-	public void findNumberOfFile() throws MonException{
+
+	public void findNumberOfFile() throws MonException {
 		Media fileSelect = new Media();
 		String pathOfAllFiles = pathOfDirectory + "\\";
 		File f = new File(pathOfAllFiles);
@@ -45,8 +55,8 @@ public class FindFiles extends Observable implements Runnable{
 			}
 		}
 	}
-	
-	public void findNumberOfFileInSubDirectory(String pathOfSubDirectory, Media fileSelect) throws MonException{
+
+	public void findNumberOfFileInSubDirectory(String pathOfSubDirectory, Media fileSelect) throws MonException {
 		String[] list = new File(pathOfSubDirectory).list();
 		for (int i = 0; i < list.length; i++) {
 			File selectedFile = new File(pathOfSubDirectory + "\\" + list[i]);
@@ -81,8 +91,8 @@ public class FindFiles extends Observable implements Runnable{
 		//Création d'un File pour recuperer la liste
 		//des sous dossier et fichiers contenu dans
 		//le dossier sélectionner
-		File f = new File(pathOfAllFiles);
-
+		File f = new File(pathOfAllFiles);	
+		
 		//Liste les dossier et fichiers
 		list = f.list();
 
@@ -110,40 +120,41 @@ public class FindFiles extends Observable implements Runnable{
 			this.createReq(pathOfSubDirectory, fileSelect, list[i]);
 		}
 	}
-	
-	private void createReq(String pathOfSubDirectory, Media fileSelect, String file) throws MonException{
+
+	private void createReq(String pathOfSubDirectory, Media fileSelect, String file) throws MonException {
 		if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mp3") || file.endsWith(".mkv")) {
-				fileSelect.setIdFile(lastId);
-				fileSelect.setTitle(file.substring(0, file.length() - 4));
-				fileSelect.setPath(pathOfSubDirectory + file);
-				fileSelect.setLength("0");
-				fileSelect.setDate("2000-01-01");
-				fileSelect.setFind(true);
-				if (!checkExistentFile(fileSelect.getPath())) {
-					String reqFile = "INSERT INTO File VALUES ('" + lastId + "', '" + fileSelect.getTitle().replaceAll("'", "''") + "', '" + fileSelect.getDate()
-							+ "', '" + fileSelect.getLength() + "', '" + fileSelect.getPath().replaceAll("'", "''") + "', '" + fileSelect.isFind() + "');";
-					if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mkv")) {
-						reqFile += "INSERT INTO Movie VALUES ('" + fileSelect.getIdFile() + "', 'Pas de synopsis');";
-					} else if (file.endsWith(".mp3")) {
-						reqFile += "INSERT INTO Music VALUES ('" + fileSelect.getIdFile() + "', '0');";
-					}
-					this.insertFiles(reqFile);
-					lastId++;
-					currentFile++;
-					boolean test = true;
-					if (numberOfFile >= 100) {
-						test = currentFile % (numberOfFile / 100) == 0 || currentFile == numberOfFile;
-					}
-					if (test) {
-						this.setChanged();
-						this.notifyObservers(currentFile);
-					}
+			fileSelect.setIdFile(lastId);
+			fileSelect.setTitle(file.substring(0, file.length() - 4));
+			fileSelect.setPath(pathOfSubDirectory + file);
+			fileSelect.setLength("0");
+			fileSelect.setDate("2000-01-01");
+			fileSelect.setFind(true);
+			if (!checkExistentFile(fileSelect.getPath())) {
+				String reqFile = "INSERT INTO File VALUES ('" + lastId + "', '" + fileSelect.getTitle().replaceAll("'", "''") + "', '" + fileSelect.getDate()
+						+ "', '" + fileSelect.getLength() + "', '" + fileSelect.getPath().replaceAll("'", "''") + "', '" + fileSelect.isFind() + "');";
+				if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mkv")) {
+					reqFile += "INSERT INTO Movie VALUES ('" + fileSelect.getIdFile() + "', 'Pas de synopsis');";
+				} else if (file.endsWith(".mp3")) {
+					reqFile += "INSERT INTO Music VALUES ('" + fileSelect.getIdFile() + "', '0');";
+				}
+				this.insertFiles(reqFile);
+				lastId++;
+				currentFile++;
+				boolean test = true;
+				if (numberOfFile >= 100) {
+					test = currentFile % (numberOfFile / 100) == 0 || currentFile == numberOfFile;
+				}
+				if (test) {
+					this.setChanged();
+					this.notifyObservers(currentFile);
 				}
 			}
+		}
 	}
 
 	/**
 	 * Insert un fichier dans la base de données
+	 *
 	 * @param media
 	 * @throws MonException
 	 */
@@ -157,8 +168,9 @@ public class FindFiles extends Observable implements Runnable{
 
 	/**
 	 * Récupère l'id max dans la table file
+	 *
 	 * @return
-	 * @throws MonException 
+	 * @throws MonException
 	 */
 	public int getMaxIdFile() throws MonException {
 		String req = "Select max(idFile) from file";
