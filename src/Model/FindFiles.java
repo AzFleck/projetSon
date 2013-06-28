@@ -4,13 +4,10 @@
  */
 package Model;
 
-import com.sun.jna.NativeLibrary;
-import com.xuggle.xuggler.IContainer;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Observable;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 /**
  *
@@ -22,14 +19,12 @@ public class FindFiles extends Observable implements Runnable {
 	String pathOfDirectory;
 	Integer numberOfFile;
 	Integer currentFile;
-	IContainer container;
 
 	public FindFiles(String pathOfDirectory) throws MonException {
 		lastId = this.getMaxIdFile() + 1;
 		numberOfFile = 0;
 		currentFile = 0;
 		this.pathOfDirectory = pathOfDirectory;
-		container = IContainer.make();
 	}
 
 	public void findNumberOfFile() throws MonException {
@@ -121,7 +116,6 @@ public class FindFiles extends Observable implements Runnable {
 			fileSelect.setIdFile(lastId);
 			fileSelect.setTitle(file.substring(0, file.length() - 4));
 			fileSelect.setPath(pathOfSubDirectory + file);
-			fileSelect.setLength(this.GetInfoContainer(fileSelect.getPath()));
 			fileSelect.setDate("2000-01-01");
 			fileSelect.setFind(true);
 			if (!checkExistentFile(fileSelect.getPath())) {
@@ -209,16 +203,5 @@ public class FindFiles extends Observable implements Runnable {
 
 	public int getNumberOfFile() {
 		return numberOfFile;
-	}
-	
-	public String GetInfoContainer(String path) {
-		String filename = path, time = "";
-		// Create a Xuggler container object
-		container.open(filename, IContainer.Type.READ, null);
-		Long heure = (container.getDuration() / 1000000) / 3600;
-		Long minutes = ((container.getDuration() / 1000000) / 60) - heure * 60;
-		Long seconds = (container.getDuration() / 1000000) - heure * 3600 - minutes * 60;
-		time = heure + ":" + minutes + ":" + seconds;
-		return time;
 	}
 }
