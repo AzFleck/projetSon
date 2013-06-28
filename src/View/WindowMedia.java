@@ -6,6 +6,7 @@ package View;
 
 import Controller.Controller;
 import Model.Database;
+import Model.FindFiles;
 import Model.Media;
 import Model.MonException;
 import Model.PlayList;
@@ -172,7 +173,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
-			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath());
+			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath(), this);
 		}
 	}
 

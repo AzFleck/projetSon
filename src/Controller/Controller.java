@@ -15,8 +15,10 @@ import Model.Media;
 import Model.Movie;
 import Model.Music;
 import Model.PlayList;
+import View.ImportFile;
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
@@ -297,10 +299,16 @@ public class Controller extends Observable {
 		return playlists;
 	}
 
-	public void getAllFiles(String pathOfDirectory) {
+	public void getAllFiles(String pathOfDirectory, Observer o) {
 		try {
-			FindFiles files = new FindFiles();
-			files.getAllFiles(pathOfDirectory);
+			FindFiles ff = new FindFiles(pathOfDirectory);
+			ImportFile importFile = new ImportFile();
+			Thread tImport = new Thread(importFile);
+			ff.addObserver(o);
+			ff.addObserver(importFile);
+			tImport.start();
+			Thread t = new Thread(ff);
+			t.start();
 		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
