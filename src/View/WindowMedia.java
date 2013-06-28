@@ -350,7 +350,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			TreePath tp = tree.getPathForLocation(me.getX(), me.getY());
 			if (tp != null) { // test si on clique sur un élément
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
-				String parent = selectedNode.getParent().toString();
+				String parent = "";
+				if(!selectedNode.toString().equals("List of files")){
+					parent = selectedNode.getParent().toString();
+				}
 				controller.fileChanged(selectedNode.toString(), parent);
 			}
 		}
