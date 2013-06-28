@@ -207,7 +207,8 @@ public class FindFiles extends Observable implements Runnable {
 			this.notifyObservers(numberOfFile);
 			this.getAllFiles();
 		} catch (MonException ex) {
-			System.out.println("Erreur");
+			this.setChanged();
+			this.notifyObservers(ex);
 		}
 	}
 

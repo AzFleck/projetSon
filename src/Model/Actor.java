@@ -19,7 +19,6 @@ public class Actor extends Person{
 	 * @throws MonException 
 	 */
 	public ArrayList<String> actorsList() throws MonException{
-		
 		return this.generateList("Actor");
 	}
 }
