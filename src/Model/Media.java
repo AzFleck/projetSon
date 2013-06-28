@@ -166,7 +166,7 @@ public class Media implements Cloneable{
 	 * @throws MonException
 	 */
 	public Media getMediaByName(String nomMedia) throws MonException {
-		String req = "Select * from file where title = '" + nomMedia + "'";
+		String req = "Select * from file where title = '" + nomMedia.replaceAll("'", "''") + "'";
 		Media med = new Media();
 		try {
 			ResultSet rs = Database.read(req);
