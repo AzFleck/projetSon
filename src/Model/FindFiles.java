@@ -19,7 +19,7 @@ public class FindFiles {
 	String reqTypeFile;
 
 	public FindFiles() throws MonException {
-		lastId = getMaxIdFile() + 1;
+		lastId = this.getMaxIdFile() + 1;
 		reqFile = "";
 		reqTypeFile = "";
 	}
@@ -107,9 +107,7 @@ public class FindFiles {
 	}
 
 	/**
-	 * *
 	 * Insert un fichier dans la base de données
-	 *
 	 * @param media
 	 * @throws MonException
 	 */
@@ -118,11 +116,14 @@ public class FindFiles {
 			Database.write(this.reqFile + this.reqTypeFile);
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 	}
 
+	/**
+	 * Récupère l'id max dans la table file
+	 * @return
+	 * @throws MonException 
+	 */
 	public int getMaxIdFile() throws MonException {
 		String req = "Select max(idFile) from file";
 		int maxId = -1;
@@ -131,9 +132,7 @@ public class FindFiles {
 			result.next();
 			maxId = result.getInt(1);
 		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			Database.disconnect();
+			throw new MonException(ex.getMessage());
 		}
 		return maxId;
 	}
@@ -147,9 +146,7 @@ public class FindFiles {
 				result = true;
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		} finally {
-			Database.disconnect();
+			throw new MonException(e.getMessage());
 		}
 		return result;
 	}

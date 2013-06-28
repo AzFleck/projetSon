@@ -67,9 +67,6 @@ public class Album {
 		catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
 		}
-		finally{
-			Database.disconnect();
-		}
 		return album;
 	}
 	
@@ -107,8 +104,6 @@ public class Album {
 			this.setMusics(this.getMediasByAlbum(this.getIdAlbum()));
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 	}
 	
@@ -129,9 +124,6 @@ public class Album {
 		}
 		catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		}
-		finally {
-			Database.disconnect();
 		}
 		return medias;
 	}

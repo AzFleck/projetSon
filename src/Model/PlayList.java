@@ -86,8 +86,6 @@ public class PlayList {
 			this.setMedias(this.getMediasByPlaylist(result.getInt(1)));
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 	}
 
@@ -111,8 +109,6 @@ public class PlayList {
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return playlists;
 	}
@@ -131,8 +127,6 @@ public class PlayList {
 			maxId = result.getInt(1);
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return maxId;
 	}
@@ -173,8 +167,6 @@ public class PlayList {
 			Database.write(reqPlaylist);
 		} catch (MonException e) {
 			throw e;
-		} finally {
-			Database.disconnect();
 		}
 		this.insertLiaison(newIdPlaylist);
 	}
@@ -198,8 +190,6 @@ public class PlayList {
 			Database.write(reqLiaison);
 		} catch (MonException e) {
 			throw e;
-		} finally {
-			Database.disconnect();
 		}
 	}
 
@@ -213,8 +203,6 @@ public class PlayList {
 			Database.write(reqPlaylist);
 		} catch (MonException e) {
 			throw e;
-		} finally {
-			Database.disconnect();
 		}
 		// Insertion pour la liaison entre les médias et la playlist
 		String reqLiaison = "delete from filePlaylist where idplaylist = " + this.getId();
@@ -222,8 +210,6 @@ public class PlayList {
 			Database.write(reqLiaison);
 		} catch (MonException e) {
 			throw e;
-		} finally {
-			Database.disconnect();
 		}
 		this.insertLiaison(this.getId());
 	}
@@ -245,8 +231,6 @@ public class PlayList {
 			}
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return result;
 	}
@@ -274,8 +258,6 @@ public class PlayList {
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return medias;
 	}

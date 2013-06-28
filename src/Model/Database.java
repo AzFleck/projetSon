@@ -24,14 +24,11 @@ public class Database {
 	public static Connection getConnection() throws MonException {
 		try {
 			if (connection instanceof Connection) {
-				if (connection.isValid(1)) {
-					return connection;
-				} else {
-					return null;
-				}
+				return connection;
 			} else {
 				Class.forName("org.sqlite.JDBC");
-				return DriverManager.getConnection("jdbc:sqlite:BddSonVideo.db");
+				connection = DriverManager.getConnection("jdbc:sqlite:BddSonVideo.db");
+				return connection;
 			}
 		} catch (SQLException e) {
 			throw new MonException(e.getMessage());
@@ -91,8 +88,6 @@ public class Database {
 				Database.write(requestSql);
 			} catch (Exception e) {
 				throw new MonException(e.getMessage());
-			} finally {
-				Database.disconnect();
 			}
 		}
 	}

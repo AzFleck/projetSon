@@ -74,9 +74,6 @@ public class Person {
 		catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
 		}
-		finally{
-			Database.disconnect();
-		}
 		return persons;
 	}
 }

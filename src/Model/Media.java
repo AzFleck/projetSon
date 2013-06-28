@@ -94,8 +94,6 @@ public class Media {
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return sorts;
 	}
@@ -137,8 +135,6 @@ public class Media {
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return genres;
 	}
@@ -158,8 +154,6 @@ public class Media {
 			med.attributeMedia(rs);
 		} catch (MonException ex) {
 			throw ex;
-		} finally {
-			Database.disconnect();
 		}
 		return med;
 	}
@@ -183,8 +177,6 @@ public class Media {
 			}
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
-		} finally {
-			Database.disconnect();
 		}
 		return medias;
 	}
