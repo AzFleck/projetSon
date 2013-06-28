@@ -6,7 +6,6 @@ package View;
 
 import Controller.Controller;
 import Model.Database;
-import Model.FindFiles;
 import Model.Media;
 import Model.MonException;
 import Model.PlayList;
@@ -43,7 +42,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -94,8 +92,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 		//Gestion menubar
 		mb_menuBar = new JMenuBar();
-		m_file = new JMenu("Fichier");
-		mi_chooseFolder = new JMenuItem("Choisir dossier");
+		m_file = new JMenu("File");
+		mi_chooseFolder = new JMenuItem("Import folder");
 
 		mb_menuBar.add(m_file);
 		m_file.add(mi_chooseFolder);
