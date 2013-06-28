@@ -11,6 +11,7 @@ import Model.MonException;
 import Model.PlayList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -35,9 +36,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -75,6 +78,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private JTable tableau;
 	private JPanel middle;
 	private boolean passer_par_listener;
+	private JMenuItem itm_detail;
+	private JPopupMenu popup;
 
 	public WindowMedia() {
 		controller = new Controller();
@@ -96,6 +101,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		mi_chooseFolder.addActionListener(this);
 		this.setJMenuBar(mb_menuBar);
 
+
+		popup = new JPopupMenu();
+		itm_detail = new JMenuItem("Détail");
+		itm_detail.addActionListener(this);
+
 		//Gestion des Jpanel
 		total.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
@@ -116,7 +126,6 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		lb_list = new JList<String>();
 		this.generateCbbPlaylist();
 		cbb_playList.addItemListener(this);
-		cbb_playList.addActionListener(this);
 
 		right.setLayout(new BorderLayout());
 		cbb_playList.setPreferredSize(new Dimension(200, 30));
@@ -173,16 +182,26 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
 			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath());
+		} else if (e.getSource() == itm_detail){
+			System.out.println("Créer une fenêtre :D");
 		}
 	}
 
-	public void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children) {
+	/**
+	 * Crée les branches de l'arbre à gauche
+	 * @param parent
+	 * @param children 
+	 */
+	private void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children) {
 		for (int i = 0; i < children.size(); i++) {
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(children.get(i));
 			parent.add(node);
 		}
 	}
 
+	/**
+	 * Crée l'arbre à gauche
+	 */
 	public void createTree() {
 		//Noeaud Files
 		root = new DefaultMutableTreeNode("List of files");
@@ -230,6 +249,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		} while (currentNode != null);
 	}
 
+	/**
+	 * Main pour lancer l'appli
+	 * @param args 
+	 */
 	public static void main(String args[]) {
 		try {
 			Database.createDatabase("BddSonVideo.sql");
@@ -258,11 +281,13 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public void updatePlayList() {
 		lb_list.removeAll();
 		DefaultListModel<String> data = new DefaultListModel<String>();
-		ArrayList<Media> medias = controller.getCurrentPlayList().getMedias();
+		ArrayList<Media> medias = controller.getSelectionPlaylist();
 		for (int i = 0; i < medias.size(); i++) {
 			data.addElement(medias.get(i).getTitle());
 		}
 		lb_list.setModel(data);
+		this.revalidate();
+		this.repaint();
 	}
 
 	@Override
@@ -278,6 +303,9 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		}
 	}
 
+	/**
+	 * Crée la combobox Playlist
+	 */
 	public void generateCbbPlaylist() {
 		passer_par_listener = false;
 		cbb_playList.removeAllItems();
@@ -325,6 +353,19 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				controller.fileChanged(selectedNode.toString(), parent);
 			}
 		}
+		else if (me.getSource() == tableau) {
+			Point p = me.getPoint();
+			if (tableau.rowAtPoint(p) != -1) {
+				if (me.getClickCount() == 2) {
+					controller.setCurrentPlayList("");
+					controller.getSelectionPlaylist().add(controller.createMediaByName(tableau.getValueAt(tableau.getSelectedRow(), 0).toString()));
+					this.updatePlayList();
+				} else if (me.getButton() == MouseEvent.BUTTON3) {
+					popup.add(itm_detail);
+					popup.show(me.getComponent(), me.getX(), me.getY());
+				}
+			}
+		}
 	}
 
 	public void generateTable() {
@@ -339,8 +380,13 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				donnees[i][3] = controller.getSelection().get(i).getPath();
 			}
 		}
-		tableau = new JTable(donnees, entetes);
+		tableau = new JTable(donnees, entetes){
+			public boolean isCellEditable(int i, int j){
+				return false;
+			}
+		};
 		tableau.setAutoCreateRowSorter(true);
+		tableau.addMouseListener(this);
 		middle.removeAll();
 		middle.add(new JScrollPane(tableau), BorderLayout.CENTER);
 		this.revalidate();

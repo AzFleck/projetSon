@@ -158,6 +158,25 @@ public class Media {
 		return med;
 	}
 
+	/**
+	 * Crée un média grâce à son nom
+	 *
+	 * @param idmedia
+	 * @return Le média crée
+	 * @throws MonException
+	 */
+	public Media getMediaByName(String nomMedia) throws MonException {
+		String req = "Select * from file where title = '" + nomMedia + "'";
+		Media med = new Media();
+		try {
+			ResultSet rs = Database.read(req);
+			med.attributeMedia(rs);
+		} catch (MonException ex) {
+			throw ex;
+		}
+		return med;
+	}
+
 	public ArrayList<Media> getMediasByPerson(int idperson) throws MonException {
 		String req = "Select idfile from personfile where idperson = " + idperson;
 		return this.getMediasBySomething(req);

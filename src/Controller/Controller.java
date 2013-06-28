@@ -27,8 +27,9 @@ public class Controller extends Observable {
 	private String currentPlayList; //nom de la playlist en cours
 	private String parentSelectedItem; //arborescence à gauche
 	private String selectedItem; //arborescence à gauche
-	private ArrayList<Media> selection; // la sélection en cours
+	private ArrayList<Media> selection; // la sélection en cours pour le milieu
 	private HashMap<String, PlayList> playlists; // toutes les playlists
+	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 
 	public Controller() {
 		this.currentPlayList = null;
@@ -36,6 +37,15 @@ public class Controller extends Observable {
 		this.selectedItem = null;
 		this.selection = new ArrayList<Media>();
 		this.playlists = new HashMap<String, PlayList>();
+		this.selectionPlaylist = new ArrayList<Media>();
+	}
+
+	public ArrayList<Media> getSelectionPlaylist() {
+		return selectionPlaylist;
+	}
+
+	public void setSelectionPlaylist(ArrayList<Media> selectionPlaylist) {
+		this.selectionPlaylist = selectionPlaylist;
 	}
 
 	public HashMap<String, PlayList> getPlaylists() {
@@ -236,6 +246,7 @@ public class Controller extends Observable {
 
 	/**
 	 * Renvoi l'objet playlist en cours
+	 *
 	 * @return Playlist
 	 */
 	public PlayList getCurrentPlayList() {
@@ -254,15 +265,15 @@ public class Controller extends Observable {
 	 * Permet de sauvegarder la playlist courante ou de l'update
 	 */
 	public void savePlaylist(String name) {
-		if (this.getCurrentPlayList().getMedias().size() > 0) {
+		if (this.getSelectionPlaylist().size() > 0) {
 			this.setCurrentPlayList(name);
 			PlayList pl = new PlayList();
 			pl.setName(name);
-			pl.setMedias(selection);
+			ArrayList<Media> array = (ArrayList<Media>) this.getSelectionPlaylist().clone();
+			pl.setMedias(array);
 			try {
-				int max = pl.getMaxIdPlayList();
 				pl.savePlaylist();
-				this.getPlaylists().put(name,pl);
+				this.getPlaylists().put(name, pl);
 			} catch (MonException ex) {
 				this.setChanged();
 				this.notifyObservers(ex);
@@ -279,7 +290,7 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		this.setCurrentPlayList(p.getName());
-		this.setSelection(this.getCurrentPlayList().getMedias());
+		this.setSelectionPlaylist(this.getCurrentPlayList().getMedias());
 		this.setChanged();
 		this.notifyObservers("Playlist");
 	}
@@ -309,5 +320,16 @@ public class Controller extends Observable {
 
 	public boolean playlistExist(String name) {
 		return this.getPlaylists().containsKey(name);
+	}
+
+	public Media createMediaByName(String name) {
+		Media med = new Media();
+		try {
+			med = med.getMediaByName(name);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+		return med;
 	}
 }
