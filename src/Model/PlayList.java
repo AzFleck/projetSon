@@ -162,7 +162,6 @@ public class PlayList {
 		int newIdPlaylist = this.getMaxIdPlayList() + 1;
 		this.setId(newIdPlaylist);
 		String reqPlaylist = "insert into playlist values(" + newIdPlaylist + ", '" + this.getName() + "');";
-		System.out.println(reqPlaylist);
 		try {
 			Database.write(reqPlaylist);
 		} catch (MonException e) {
