@@ -14,10 +14,19 @@ import java.util.ArrayList;
  * @author Quentin
  */
 public class Person {
+	private int id;
 	private String nom;
 	private String prenom;
 	private String nationality;
 	private String date;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getDate() {
 		return date;
@@ -75,5 +84,32 @@ public class Person {
 			throw new MonException(ex.getMessage());
 		}
 		return persons;
+	}
+	
+	public ArrayList<Media> getMediasByPerson(String lastname, String firstname, String type) throws MonException {
+		String req = "Select * from file f "
+				+ "join personfile pf on f.idfile = pf.idfile "
+				+ "join person p on p.idperson = pf.idperson "
+				+ "join type t on t.idtype = pf.idtype "
+				+ "where p.lastname like '%" + lastname + "' "
+				+ "and p.firstname like '" + firstname +"%' "
+				+ "and t.libelle = '" + type + "'";
+		ArrayList<Media> medias = new ArrayList<Media>();
+		try {
+			ResultSet result = Database.read(req);
+			while (result.next()) {
+				Media m = new Media();
+				m.setIdFile(result.getInt(1));
+				m.setTitle(result.getString(2));
+				m.setDate(result.getString(3));
+				m.setLength(result.getString(4));
+				m.setPath(result.getString(5));
+				m.setFind(result.getBoolean(6));
+				medias.add(m);
+			}
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
+		return medias;
 	}
 }

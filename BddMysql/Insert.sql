@@ -44,6 +44,7 @@ INSERT INTO FileSort VALUES (5, 4);
 INSERT INTO FileSort VALUES (6, 4);
 
 INSERT INTO PersonFile VALUES (1, 1, 1);
+INSERT INTO PersonFile VALUES (1, 1, 2);
 INSERT INTO PersonFile VALUES (1, 2, 1);
 INSERT INTO PersonFile VALUES (2, 3, 1);
 INSERT INTO PersonFile VALUES (3, 1, 1);

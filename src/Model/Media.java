@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Quentin
  */
-public class Media {
+public class Media implements Cloneable{
 
 	protected int idFile;
 	protected String title; //titre
@@ -205,4 +205,16 @@ public class Media {
 		return this.getMediasBySomething(req);
 	}
 	
+	@Override
+	public Media clone(){
+		Media med = new Media();
+		med.setIdFile(this.getIdFile());
+		med.setTitle(this.getTitle());
+		med.setDate(this.getDate());
+		med.setLength(this.getLength());
+		med.setPath(this.getPath());
+		med.setFind(this.isFind());
+		med.setSort(this.getSort());
+		return med;
+	}
 }

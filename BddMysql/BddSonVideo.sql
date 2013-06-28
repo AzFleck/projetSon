@@ -46,9 +46,8 @@ CREATE  TABLE 'Sort' (
 
 CREATE  TABLE 'PersonFile' (
   'idPerson' INT NOT NULL ,
-  'idFile' INT NOT NULL ,
-  'idType' INT NOT NULL ,
-  PRIMARY KEY ('idPerson', 'idFile') ,
+  'idFile' INT NOT NULL ,  'idType' INT NOT NULL ,
+  PRIMARY KEY ('idPerson', 'idFile', 'idType') ,
   CONSTRAINT 'fk_Person_has_File_Person1'
     FOREIGN KEY ('idPerson' )
     REFERENCES 'Person' ('idPerson' ),
@@ -84,18 +83,4 @@ CREATE  TABLE 'Music' (
     FOREIGN KEY ('idAlbum' )
     REFERENCES 'Album' ('idAlbum' ) );
 
-CREATE  TABLE `Playlist` (
-  `idPlaylist` INT NOT NULL ,
-  `name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`idPlaylist`) );
-
-CREATE  TABLE `FilePlaylist` (
-  `idFile` INT NOT NULL ,
-  `idPlaylist` INT NOT NULL ,
-  PRIMARY KEY (`idFile`, `idPlaylist`) ,
-  CONSTRAINT `fk_File_has_Playlist_File1`
-    FOREIGN KEY (`idFile` )
-    REFERENCES `File` (`idFile` ),
-  CONSTRAINT `fk_File_has_Playlist_Playlist1`
-    FOREIGN KEY (`idPlaylist` )
-    REFERENCES `Playlist` (`idPlaylist` ) );
+CREATE  TABLE `Playlist` (  `idPlaylist` INT NOT NULL ,  `name` VARCHAR(45) NOT NULL ,  PRIMARY KEY (`idPlaylist`) );CREATE  TABLE `FilePlaylist` (  `idFile` INT NOT NULL ,  `idPlaylist` INT NOT NULL ,  PRIMARY KEY (`idFile`, `idPlaylist`) ,  CONSTRAINT `fk_File_has_Playlist_File1`    FOREIGN KEY (`idFile` )    REFERENCES `File` (`idFile` ),  CONSTRAINT `fk_File_has_Playlist_Playlist1`    FOREIGN KEY (`idPlaylist` )    REFERENCES `Playlist` (`idPlaylist` ) );

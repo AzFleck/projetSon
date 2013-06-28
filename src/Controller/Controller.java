@@ -14,11 +14,14 @@ import Model.FindFiles;
 import Model.Media;
 import Model.Movie;
 import Model.Music;
+import Model.Person;
 import Model.PlayList;
 import View.ImportFile;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -109,15 +112,39 @@ public class Controller extends Observable {
 	}
 
 	public void recoverActor() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Actor"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverDirector() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Director"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverSort() {
 	}
 
 	public void recoverArtist() {
+		try {
+			Person a = new Person();
+			String[] split = selectedItem.split(" ");
+			this.setSelection(a.getMediasByPerson(split[split.length - 1], split[0], "Artist"));
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void recoverStyle() {
@@ -271,7 +298,11 @@ public class Controller extends Observable {
 			this.setCurrentPlayList(name);
 			PlayList pl = new PlayList();
 			pl.setName(name);
-			ArrayList<Media> array = (ArrayList<Media>) this.getSelectionPlaylist().clone();
+			ArrayList<Media> array = new ArrayList<Media>();
+			for (Media item : this.getSelectionPlaylist()) {
+				Media med = item.clone();
+				array.add(med);
+			}
 			pl.setMedias(array);
 			try {
 				pl.savePlaylist();
@@ -292,7 +323,12 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		this.setCurrentPlayList(p.getName());
-		this.setSelectionPlaylist(this.getCurrentPlayList().getMedias());
+		ArrayList<Media> array = new ArrayList<Media>();
+		for (Media item : this.getCurrentPlayList().getMedias()) {
+			Media med = item.clone();
+			array.add(med);
+		}
+		this.setSelectionPlaylist(array);
 		this.setChanged();
 		this.notifyObservers("Playlist");
 	}
