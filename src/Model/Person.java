@@ -67,10 +67,11 @@ public class Person {
 	 * @throws MonException 
 	 */
 	protected ArrayList<String> generateList(String type) throws MonException{
-		String req = "Select LastName, FirstName from person p"
-					 + " join persontype pt on pt.idperson = p.idperson"
-					 + " join \"type\" t on pt.idtype = t.idtype"
-					 + " where t.libelle = \""+type+"\"";
+		String req = "Select distinct LastName, FirstName from person p"
+					 + " join personfile pf on pf.idperson = p.idperson"
+					 + " join \"type\" t on pf.idtype = t.idtype"
+					 + " where t.libelle = \""+type+"\" "
+					 + "order by FirstName";
 		ArrayList<String> persons = new ArrayList<String>();
 		try {
 			ResultSet result = Database.read(req);
