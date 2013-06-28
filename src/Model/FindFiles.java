@@ -7,21 +7,59 @@ package Model;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Observable;
 
 /**
  *
  * @author Fabien
  */
-public class FindFiles {
+public class FindFiles extends Observable implements Runnable{
 
 	Integer lastId;
-	String reqFile;
-	String reqTypeFile;
+	String pathOfDirectory;
+	Integer numberOfFile;
+	Integer currentFile;
 
-	public FindFiles() throws MonException {
+	public FindFiles(String pathOfDirectory) throws MonException {
 		lastId = this.getMaxIdFile() + 1;
-		reqFile = "";
-		reqTypeFile = "";
+		numberOfFile = 0;
+		currentFile = 0;
+		this.pathOfDirectory = pathOfDirectory;
+	}
+	
+	public void findNumberOfFile() throws MonException{
+		Media fileSelect = new Media();
+		String pathOfAllFiles = pathOfDirectory + "\\";
+		File f = new File(pathOfAllFiles);
+		String[] list = f.list();
+		for (int i = 0; i < list.length; i++) {
+			File selectedFile = new File(pathOfAllFiles + list[i]);
+			if (selectedFile.isDirectory()) {
+				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+			}
+			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
+				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
+				if (!checkExistentFile(selectedFile.getAbsolutePath())) {
+					numberOfFile++;
+				}
+			}
+		}
+	}
+	
+	public void findNumberOfFileInSubDirectory(String pathOfSubDirectory, Media fileSelect) throws MonException{
+		String[] list = new File(pathOfSubDirectory).list();
+		for (int i = 0; i < list.length; i++) {
+			File selectedFile = new File(pathOfSubDirectory + "\\" + list[i]);
+			if (selectedFile.isDirectory()) {
+				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+			}
+			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
+				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
+				if (!checkExistentFile(selectedFile.getAbsolutePath())) {
+					numberOfFile++;
+				}
+			}
+		}
 	}
 
 	/**
@@ -29,7 +67,7 @@ public class FindFiles {
 	 * @param pathOfDirectory
 	 * @throws MonException
 	 */
-	public void getAllFiles(String pathOfDirectory) throws MonException {
+	public void getAllFiles() throws MonException {
 		//Fichier en cours d'importation.
 		Media fileSelect = new Media();
 
@@ -54,26 +92,10 @@ public class FindFiles {
 			if (selectedFile.isDirectory()) {
 				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
 			}
-			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
-				fileSelect.setIdFile(lastId);
-				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
-				fileSelect.setPath(pathOfAllFiles + fileSelect.getTitle());
-				fileSelect.setLength("0");
-				fileSelect.setDate("2000-01-01");
-				fileSelect.setFind(true);
-				if (!checkExistentFile(fileSelect.getTitle())) {
-					this.reqFile += "INSERT INTO File VALUES ('" + lastId + "', '" + fileSelect.getTitle().replaceAll("'", "''") + "', '" + fileSelect.getDate()
-							+ "', '" + fileSelect.getLength() + "', '" + fileSelect.getPath().replaceAll("'", "''") + "', '" + fileSelect.isFind() + "');";
-					if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mkv")) {
-						this.reqTypeFile += "INSERT INTO Movie VALUES ('" + fileSelect.getIdFile() + "', 'Pas de synopsis');";
-					} else if (list[i].endsWith(".mp3")) {
-						this.reqTypeFile += "INSERT INTO Music VALUES ('" + fileSelect.getIdFile() + "', '0');";
-					}
-					lastId++;
-				}
-			}
+			this.createReq(f.getAbsolutePath(), fileSelect, list[i]);
 		}
-		insertAllFiles();
+		this.setChanged();
+		this.notifyObservers(currentFile);
 	}
 
 	public void getAllFilesInSubDirectory(String pathOfSubDirectory, Media fileSelect) throws MonException {
@@ -85,25 +107,39 @@ public class FindFiles {
 			if (selectedFile.isDirectory()) {
 				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
 			}
-			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
+			this.createReq(pathOfSubDirectory, fileSelect, list[i]);
+		}
+	}
+	
+	private void createReq(String pathOfSubDirectory, Media fileSelect, String file) throws MonException{
+		if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mp3") || file.endsWith(".mkv")) {
 				fileSelect.setIdFile(lastId);
-				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
-				fileSelect.setPath(pathOfSubDirectory + list[i]);
+				fileSelect.setTitle(file.substring(0, file.length() - 4));
+				fileSelect.setPath(pathOfSubDirectory + file);
 				fileSelect.setLength("0");
 				fileSelect.setDate("2000-01-01");
 				fileSelect.setFind(true);
-				if (!checkExistentFile(fileSelect.getTitle())) {
-					this.reqFile += "INSERT INTO File VALUES ('" + lastId + "', '" + fileSelect.getTitle().replaceAll("'", "''") + "', '" + fileSelect.getDate()
+				if (!checkExistentFile(fileSelect.getPath())) {
+					String reqFile = "INSERT INTO File VALUES ('" + lastId + "', '" + fileSelect.getTitle().replaceAll("'", "''") + "', '" + fileSelect.getDate()
 							+ "', '" + fileSelect.getLength() + "', '" + fileSelect.getPath().replaceAll("'", "''") + "', '" + fileSelect.isFind() + "');";
-					if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mkv")) {
-						this.reqTypeFile += "INSERT INTO Movie VALUES ('" + fileSelect.getIdFile() + "', 'Pas de synopsis');";
-					} else if (list[i].endsWith(".mp3")) {
-						this.reqTypeFile += "INSERT INTO Music VALUES ('" + fileSelect.getIdFile() + "', '0');";
+					if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mkv")) {
+						reqFile += "INSERT INTO Movie VALUES ('" + fileSelect.getIdFile() + "', 'Pas de synopsis');";
+					} else if (file.endsWith(".mp3")) {
+						reqFile += "INSERT INTO Music VALUES ('" + fileSelect.getIdFile() + "', '0');";
 					}
+					this.insertFiles(reqFile);
 					lastId++;
+					currentFile++;
+					boolean test = true;
+					if (numberOfFile >= 100) {
+						test = currentFile % (numberOfFile / 100) == 0 || currentFile == numberOfFile;
+					}
+					if (test) {
+						this.setChanged();
+						this.notifyObservers(currentFile);
+					}
 				}
 			}
-		}
 	}
 
 	/**
@@ -111,9 +147,9 @@ public class FindFiles {
 	 * @param media
 	 * @throws MonException
 	 */
-	public void insertAllFiles() throws MonException {
+	public void insertFiles(String req) throws MonException {
 		try {
-			Database.write(this.reqFile + this.reqTypeFile);
+			Database.write(req);
 		} catch (Exception e) {
 			throw new MonException(e.getMessage());
 		}
@@ -149,5 +185,21 @@ public class FindFiles {
 			throw new MonException(e.getMessage());
 		}
 		return result;
+	}
+
+	@Override
+	public void run() {
+		try {
+			this.findNumberOfFile();
+			this.setChanged();
+			this.notifyObservers(numberOfFile);
+			this.getAllFiles();
+		} catch (MonException ex) {
+			System.out.println("Erreur");
+		}
+	}
+
+	public int getNumberOfFile() {
+		return numberOfFile;
 	}
 }
