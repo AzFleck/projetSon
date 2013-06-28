@@ -266,7 +266,15 @@ public class Controller extends Observable {
 	public void pause() {
 	}
 
-	public void stop() {
+	public void stop(String name) {
+		try {
+			Media m = new Media();
+			m = m.getMediaByName(name);
+			mediaPlayer.changeFile(m.getPath());
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void next() {
