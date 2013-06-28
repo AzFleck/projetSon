@@ -162,7 +162,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
-			controller.play();
+			if(!lb_list.isSelectionEmpty())
+				controller.play(lb_list.getSelectedValue());
 		} else if (e.getSource() == btn_next) {
 			controller.next();
 		} else if (e.getSource() == btn_previous) {

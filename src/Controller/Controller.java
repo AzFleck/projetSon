@@ -17,16 +17,19 @@ import Model.Music;
 import Model.Person;
 import Model.PlayList;
 import View.ImportFile;
+import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Quentin
  */
 public class Controller extends Observable {
-
+	private MediaPlayer mediaPlayer;
 	private String currentPlayList; //nom de la playlist en cours
 	private String parentSelectedItem; //arborescence à gauche
 	private String selectedItem; //arborescence à gauche
@@ -247,7 +250,19 @@ public class Controller extends Observable {
 		return tab;
 	}
 
-	public void play() {
+	public void play(String name) {
+		try {
+			Media m = new Media();
+			m = m.getMediaByName(name);
+			mediaPlayer = new MediaPlayer(m.getPath());
+			mediaPlayer.run();
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		} catch (InterruptedException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 
 	public void pause() {
