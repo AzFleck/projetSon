@@ -21,6 +21,8 @@ import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -252,7 +254,11 @@ public class Controller extends Observable {
 		try {
 			Media m = new Media();
 			m = m.getMediaByName(name);
-			mediaPlayer = new MediaPlayer(m.getPath());
+			if(mediaPlayer instanceof MediaPlayer){
+				mediaPlayer.changeFile(name);
+			}else{
+				mediaPlayer = new MediaPlayer(m.getPath());
+			}
 			mediaPlayer.run();
 		} catch (MonException ex) {
 			this.setChanged();
@@ -274,6 +280,10 @@ public class Controller extends Observable {
 		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
+		} catch (InterruptedException ex) {
+			MonException e = new MonException(ex.getMessage());
+			this.setChanged();
+			this.notifyObservers(e);
 		}
 	}
 
