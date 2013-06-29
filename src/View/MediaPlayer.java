@@ -5,6 +5,8 @@
 package View;
 
 import com.sun.jna.NativeLibrary;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
@@ -14,7 +16,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
  *
  * @author Quentin
  */
-public class MediaPlayer extends JFrame{
+public class MediaPlayer extends JFrame implements WindowListener{
 	private EmbeddedMediaPlayerComponent ourMediaPlayer;
 	private String mediaPath = "";
 
@@ -41,16 +43,58 @@ public class MediaPlayer extends JFrame{
 		this.setContentPane(ourMediaPlayer);
 		this.setSize(1200, 800);
 		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	public void run() throws InterruptedException {
-		ourMediaPlayer.getMediaPlayer().playMedia(mediaPath, "0");
+		this.getOurMediaPlayer().getMediaPlayer().playMedia(mediaPath, "0");
 	}
 	public void pause(){
 		this.getOurMediaPlayer().getMediaPlayer().setPause(true);
 	}
 	public void play(){
 		this.getOurMediaPlayer().getMediaPlayer().setPause(false);
+	}
+	public void stop(){
+		this.getOurMediaPlayer().getMediaPlayer().setPause(true);
+		this.getOurMediaPlayer().getMediaPlayer().setTime(0);
+	}
+	public void goTo(long time){
+		this.getOurMediaPlayer().getMediaPlayer().setTime(0);
+	}
+	public void changeFile(String path){
+		this.setMediaPath(path);
+		this.getOurMediaPlayer().getMediaPlayer().playMedia(mediaPath, "0");
+	}
+	
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		ourMediaPlayer.getMediaPlayer().release();
+		ourMediaPlayer.release();
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
 	}
 }

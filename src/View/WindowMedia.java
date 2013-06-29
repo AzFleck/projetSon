@@ -28,6 +28,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -38,7 +40,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
@@ -128,10 +129,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		right.add(lb_list, BorderLayout.CENTER);
 
 		//Panel down
-		btn_play = new JButton("Play");
-		btn_stop = new JButton("Stop");
-		btn_next = new JButton("Next");
-		btn_previous = new JButton("Previous");
+		btn_play = new JButton(new ImageIcon("resources/play.png"));
+		btn_stop = new JButton(new ImageIcon("resources/stop.png"));
+		btn_next = new JButton(new ImageIcon("resources/next.png"));
+		btn_previous = new JButton(new ImageIcon("resources/previous.png"));
 		btn_repeat = new JButton("Repeat");
 		btn_random = new JButton("Random");
 
@@ -160,8 +161,19 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
-			if(!lb_list.isSelectionEmpty())
-				controller.play(lb_list.getSelectedValue());
+			if(lb_list.getModel().getSize() != 0){
+				if (!lb_list.isSelectionEmpty()) {
+					controller.play(lb_list.getSelectedValue());
+				}
+				else{
+					controller.play(lb_list.getModel().getElementAt(0));
+				}
+			}
+			else{
+				if(!controller.getSelection().isEmpty() && this.tableau.getSelectedRow() != -1){
+					System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+				}
+			}
 		} else if (e.getSource() == btn_next) {
 			controller.next();
 		} else if (e.getSource() == btn_previous) {
@@ -171,19 +183,32 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		} else if (e.getSource() == btn_repeat) {
 			controller.repeat();
 		} else if (e.getSource() == btn_stop) {
-			controller.stop();
+			if(lb_list.getModel().getSize() != 0){
+				if (!lb_list.isSelectionEmpty()) {
+					controller.stop(lb_list.getSelectedValue());
+				}
+				else{
+					controller.stop(lb_list.getModel().getElementAt(0));
+				}
+			}
+			else{
+				if(!controller.getSelection().isEmpty() && this.tableau.getSelectedRow() != -1){
+					System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+				}
+			}
 		} else if (e.getSource() == mi_chooseFolder) {
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
-			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath(),this);
+			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath(), this);
 		}
 	}
 
 	/**
 	 * Crée les branches de l'arbre à gauche
+	 *
 	 * @param parent
-	 * @param children 
+	 * @param children
 	 */
 	private void createBranches(DefaultMutableTreeNode parent, ArrayList<String> children) {
 		for (int i = 0; i < children.size(); i++) {
@@ -244,7 +269,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	/**
 	 * Main pour lancer l'appli
-	 * @param args 
+	 *
+	 * @param args
 	 */
 	public static void main(String args[]) {
 		try {
@@ -344,18 +370,17 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			if (tp != null) { // test si on clique sur un élément
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
 				String parent = "";
-				if(!selectedNode.toString().equals("List of files")){
+				if (!selectedNode.toString().equals("List of files")) {
 					parent = selectedNode.getParent().toString();
 				}
 				controller.fileChanged(selectedNode.toString(), parent);
 			}
-		}
-		else if (me.getSource() == tableau) {
+		} else if (me.getSource() == tableau) {
 			Point p = me.getPoint();
 			if (tableau.rowAtPoint(p) != -1) {
 				if (me.getClickCount() == 2) {
 					controller.setCurrentPlayList("");
-					controller.getSelectionPlaylist().add(controller.createMediaByName(tableau.getValueAt(tableau.getSelectedRow(), 0).toString()));
+					controller.getSelectionPlaylist().add(controller.createMediaByName(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Title"))).toString()));
 					this.updatePlayList();
 				}
 			}
@@ -374,8 +399,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				donnees[i][3] = controller.getSelection().get(i).getPath();
 			}
 		}
-		tableau = new JTable(donnees, entetes){
-			public boolean isCellEditable(int i, int j){
+		tableau = new JTable(donnees, entetes) {
+			public boolean isCellEditable(int i, int j) {
 				return false;
 			}
 		};
@@ -397,9 +422,9 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == 127){
+		if (e.getKeyCode() == 127) {
 			int index = lb_list.getSelectedIndex();
-			if(index != -1){
+			if (index != -1) {
 				controller.getSelectionPlaylist().remove(index);
 				controller.setCurrentPlayList("");
 				this.generateCbbPlaylist();
