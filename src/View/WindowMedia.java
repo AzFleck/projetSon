@@ -170,8 +170,16 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				}
 			}
 			else{
-				if(!controller.getSelection().isEmpty() && this.tableau.getSelectedRow() != -1){
-					System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+				if(!controller.getSelection().isEmpty()){
+					controller.setSelectionPlaylist(controller.getSelection());
+					this.updatePlayList();
+					if(this.tableau.getSelectedRow() != -1){
+						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+					}
+					else{
+						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+					}
+					
 				}
 			}
 		} else if (e.getSource() == btn_next) {
@@ -192,8 +200,15 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				}
 			}
 			else{
-				if(!controller.getSelection().isEmpty() && this.tableau.getSelectedRow() != -1){
-					System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+				if(!controller.getSelection().isEmpty()){
+					controller.setSelectionPlaylist(controller.getSelection());
+					if(this.tableau.getSelectedRow() != -1){
+						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+					}
+					else{
+						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
+					}
+					
 				}
 			}
 		} else if (e.getSource() == mi_chooseFolder) {
