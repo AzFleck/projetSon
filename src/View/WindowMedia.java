@@ -11,6 +11,7 @@ import Model.MonException;
 import Model.PlayList;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +28,7 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -34,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -42,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -79,6 +83,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private ArrayList<String> albumslist;
 	private JTable tableau;
 	private JPanel middle;
+	private JPanel detail;
 	private boolean passer_par_listener;
 
 	public WindowMedia() {
@@ -90,7 +95,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		//Gestion menubar
 		mb_menuBar = new JMenuBar();
 		m_file = new JMenu("File");
@@ -107,6 +112,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		JPanel right = new JPanel();
 		JPanel down = new JPanel();
 		middle = new JPanel();
+		detail = new JPanel();
 		middle.setLayout(new BorderLayout());
 		JPanel up = new JPanel();
 		left.setLayout(new BorderLayout());
@@ -161,25 +167,22 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
-			if(lb_list.getModel().getSize() != 0){
+			if (lb_list.getModel().getSize() != 0) {
 				if (!lb_list.isSelectionEmpty()) {
 					controller.play(lb_list.getSelectedValue());
-				}
-				else{
+				} else {
 					controller.play(lb_list.getModel().getElementAt(0));
 				}
-			}
-			else{
-				if(!controller.getSelection().isEmpty()){
+			} else {
+				if (!controller.getSelection().isEmpty()) {
 					controller.setSelectionPlaylist(controller.getSelection());
 					this.updatePlayList();
-					if(this.tableau.getSelectedRow() != -1){
+					if (this.tableau.getSelectedRow() != -1) {
 						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					else{
+					} else {
 						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
 					}
-					
+
 				}
 			}
 		} else if (e.getSource() == btn_next) {
@@ -191,24 +194,21 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		} else if (e.getSource() == btn_repeat) {
 			controller.repeat();
 		} else if (e.getSource() == btn_stop) {
-			if(lb_list.getModel().getSize() != 0){
+			if (lb_list.getModel().getSize() != 0) {
 				if (!lb_list.isSelectionEmpty()) {
 					controller.stop(lb_list.getSelectedValue());
-				}
-				else{
+				} else {
 					controller.stop(lb_list.getModel().getElementAt(0));
 				}
-			}
-			else{
-				if(!controller.getSelection().isEmpty()){
+			} else {
+				if (!controller.getSelection().isEmpty()) {
 					controller.setSelectionPlaylist(controller.getSelection());
-					if(this.tableau.getSelectedRow() != -1){
+					if (this.tableau.getSelectedRow() != -1) {
 						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					else{
+					} else {
 						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
 					}
-					
+
 				}
 			}
 		} else if (e.getSource() == mi_chooseFolder) {
@@ -398,6 +398,9 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 					controller.getSelectionPlaylist().add(controller.createMediaByName(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Title"))).toString()));
 					this.updatePlayList();
 				}
+				else{
+					this.generateDetail(tableau.getValueAt(tableau.getSelectedRow(),tableau.getColumnModel().getColumnIndex(new String("Title"))).toString());
+				}
 			}
 		}
 	}
@@ -423,6 +426,39 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		tableau.addMouseListener(this);
 		middle.removeAll();
 		middle.add(new JScrollPane(tableau), BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+	}
+
+	public void generateDetail(String name) {
+		detail.removeAll();
+		Media m = controller.getMediaByName(name);
+		JLabel lbl_title = new JLabel("Title : ");
+		JTextField txt_title = new JTextField(m.getTitle());
+		JLabel lbl_date = new JLabel("Release date : ");
+		JTextField txt_date = new JTextField(m.getDate());
+		JLabel lbl_sort = new JLabel("Sort(s) : ");
+		JList<String> jl = new JList<String>();
+		DefaultListModel<String> data = new DefaultListModel<String>();
+		for (int i = 0; i < m.getSort().size(); i++) {
+			data.addElement(m.getSort().get(i));
+		}
+		detail.setLayout(new GridLayout(1,2));
+		JPanel gauche = new JPanel();
+		gauche.setLayout(new BoxLayout(gauche, BoxLayout.PAGE_AXIS));
+		JPanel droite = new JPanel();
+		droite.setLayout(new BoxLayout(droite, BoxLayout.PAGE_AXIS));
+		jl.setModel(data);
+		jl.setPreferredSize(new Dimension(90, 200));
+		gauche.add(lbl_title);
+		droite.add(txt_title);
+		gauche.add(lbl_date);
+		droite.add(txt_date);
+		gauche.add(lbl_sort);
+		droite.add(jl);
+		detail.add(gauche);
+		detail.add(droite);
+		middle.add(detail, BorderLayout.SOUTH);
 		this.revalidate();
 		this.repaint();
 	}

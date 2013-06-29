@@ -29,6 +29,7 @@ import java.util.logging.Logger;
  * @author Quentin
  */
 public class Controller extends Observable {
+
 	private MediaPlayer mediaPlayer;
 	private String currentPlayList; //nom de la playlist en cours
 	private String parentSelectedItem; //arborescence à gauche
@@ -254,9 +255,9 @@ public class Controller extends Observable {
 		try {
 			Media m = new Media();
 			m = m.getMediaByName(name);
-			if(mediaPlayer instanceof MediaPlayer){
+			if (mediaPlayer instanceof MediaPlayer) {
 				mediaPlayer.changeFile(name);
-			}else{
+			} else {
 				mediaPlayer = new MediaPlayer(m.getPath());
 			}
 			mediaPlayer.run();
@@ -404,5 +405,16 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		return med;
+	}
+
+	public Media getMediaByName(String name) {
+		Media m = new Media();
+		try {
+			m = m.getMediaByName(name);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+		return m;
 	}
 }
