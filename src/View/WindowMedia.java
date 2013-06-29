@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -43,6 +45,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -274,9 +279,18 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	 */
 	public static void main(String args[]) {
 		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			Database.createDatabase("BddSonVideo.sql");
 		} catch (MonException ex) {
 			JOptionPane.showMessageDialog(null, ex.getMessage());
+		} catch (ClassNotFoundException ex) {
+			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InstantiationException ex) {
+			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IllegalAccessException ex) {
+			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (UnsupportedLookAndFeelException ex) {
+			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		WindowMedia windowMedia = new WindowMedia();
 		windowMedia.setVisible(true);
