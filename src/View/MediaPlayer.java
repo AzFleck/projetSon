@@ -4,7 +4,6 @@
  */
 package View;
 
-import Controller.Controller;
 import com.sun.jna.NativeLibrary;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -12,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import javax.swing.JButton;
+import java.util.Observable;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -22,12 +21,13 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
  *
  * @author Quentin
  */
-public class MediaPlayer extends JFrame implements WindowListener, MouseListener {
+public class MediaPlayer extends Observable implements WindowListener, MouseListener {
 
 	private EmbeddedMediaPlayerComponent ourMediaPlayer;
 	private String mediaPath = "";
 	private JList<String> lb_list;
 	private ButtonBar buttonBar;
+	private JFrame frame;
 
 	public EmbeddedMediaPlayerComponent getOurMediaPlayer() {
 		return ourMediaPlayer;
@@ -51,13 +51,13 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "BibliVlcJ\\");
 		ourMediaPlayer = new EmbeddedMediaPlayerComponent();
 		this.ourMediaPlayer.setPreferredSize(new Dimension(1200, 600));
-		this.setLayout(new BorderLayout());
-		this.addMouseListener(this);
-		this.add(ourMediaPlayer, BorderLayout.CENTER);
-		this.add(buttonBar, BorderLayout.SOUTH);
-		this.setSize(1200, 800);
-		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+		frame.addMouseListener(this);
+		frame.add(ourMediaPlayer, BorderLayout.CENTER);
+		frame.add(buttonBar, BorderLayout.SOUTH);
+		frame.setSize(1200, 800);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	public void run() throws InterruptedException {
@@ -83,17 +83,16 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 
 	public void changeFile(String path) throws InterruptedException {
 		this.ourMediaPlayer.getMediaPlayer().release();
-		this.remove(ourMediaPlayer);
+		frame.remove(ourMediaPlayer);
 		this.ourMediaPlayer = new EmbeddedMediaPlayerComponent();
-		this.add(ourMediaPlayer, BorderLayout.CENTER);
+		frame.add(ourMediaPlayer, BorderLayout.CENTER);
 		this.mediaPath = path;
-		this.revalidate();
-		this.repaint();
+		frame.revalidate();
+		frame.repaint();
 	}
 
 	public void fullScreen() {
-		this.setUndecorated(true);
-		this.setExtendedState(MAXIMIZED_BOTH);
+		this.ourMediaPlayer.getMediaPlayer().setFullScreen(true);
 	}
 
 	public void setVolume(int newValue) {
