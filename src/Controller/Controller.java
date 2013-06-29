@@ -16,19 +16,18 @@ import Model.Movie;
 import Model.Music;
 import Model.Person;
 import Model.PlayList;
+import View.ButtonBar;
 import View.ImportFile;
 import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Quentin
  */
 public class Controller extends Observable {
+
 	private MediaPlayer mediaPlayer;
 	private String currentPlayList; //nom de la playlist en cours
 	private String parentSelectedItem; //arborescence à gauche
@@ -36,7 +35,8 @@ public class Controller extends Observable {
 	private ArrayList<Media> selection; // la sélection en cours pour le milieu
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
-
+	private ButtonBar buttonBar;
+			
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
@@ -250,14 +250,16 @@ public class Controller extends Observable {
 		return tab;
 	}
 
-	public void play(String name) {
+	public void play(String name, ButtonBar buttonBar) {
 		try {
 			Media m = new Media();
 			m = m.getMediaByName(name);
-			if(mediaPlayer instanceof MediaPlayer){
-				mediaPlayer.changeFile(name);
-			}else{
-				mediaPlayer = new MediaPlayer(m.getPath());
+			if (mediaPlayer instanceof MediaPlayer) {
+				//mediaPlayer.dispose();
+				//mediaPlayer = new MediaPlayer(m.getPath());
+				mediaPlayer.changeFile(m.getPath());
+			} else {
+				mediaPlayer = new MediaPlayer(m.getPath(), buttonBar);
 			}
 			mediaPlayer.run();
 		} catch (MonException ex) {
@@ -269,22 +271,16 @@ public class Controller extends Observable {
 		}
 	}
 
-	public void pause() {
+	public void playPause(boolean state) {
+		if (state) {
+			mediaPlayer.play();
+		} else {
+			mediaPlayer.pause();
+		}
 	}
 
-	public void stop(String name) {
-		try {
-			Media m = new Media();
-			m = m.getMediaByName(name);
-			mediaPlayer.changeFile(m.getPath());
-		} catch (MonException ex) {
-			this.setChanged();
-			this.notifyObservers(ex);
-		} catch (InterruptedException ex) {
-			MonException e = new MonException(ex.getMessage());
-			this.setChanged();
-			this.notifyObservers(e);
-		}
+	public void stop() {
+			mediaPlayer.stop();
 	}
 
 	public void next() {
@@ -300,6 +296,14 @@ public class Controller extends Observable {
 	}
 
 	public void chooseFolder() {
+	}
+	
+	public void setVolume(int newValue) {
+		mediaPlayer.setVolume(newValue);
+	}
+	
+	public void setTime(long newValue) {
+		mediaPlayer.setTime(newValue);
 	}
 
 	/**

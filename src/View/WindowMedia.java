@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -45,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -89,6 +87,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	public WindowMedia() {
 		controller = new Controller();
 		controller.addObserver(this);
+		
 		JPanel total = new JPanel();
 		this.add(total);
 		this.setTitle("Mound Manager");
@@ -105,55 +104,35 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		m_file.add(mi_chooseFolder);
 		mi_chooseFolder.addActionListener(this);
 		this.setJMenuBar(mb_menuBar);
-
+		
+		//Panel right
+		cbb_playList = new JComboBox<String>();
+		lb_list = new JList<String>();
+		this.generateCbbPlaylist();
+		cbb_playList.addItemListener(this);
+		
 		//Gestion des Jpanel
 		total.setLayout(new BorderLayout());
 		JPanel left = new JPanel();
 		JPanel right = new JPanel();
-		JPanel down = new JPanel();
 		middle = new JPanel();
 		middle.setLayout(new BorderLayout());
 		JPanel up = new JPanel();
+		ButtonBar down = new ButtonBar(this.controller, this.lb_list);
 		left.setLayout(new BorderLayout());
 		total.add(left, BorderLayout.WEST);
 		total.add(right, BorderLayout.EAST);
 		total.add(down, BorderLayout.SOUTH);
 		total.add(middle, BorderLayout.CENTER);
 		total.add(up, BorderLayout.NORTH);
-
-		//Panel right
-		cbb_playList = new JComboBox<String>();
-		lb_list = new JList<String>();
-		this.generateCbbPlaylist();
-		cbb_playList.addItemListener(this);
+		
+		
 
 		right.setLayout(new BorderLayout());
 		cbb_playList.setPreferredSize(new Dimension(200, 30));
 		cbb_playList.setEditable(true);
 		right.add(cbb_playList, BorderLayout.NORTH);
 		right.add(lb_list, BorderLayout.CENTER);
-
-		//Panel down
-		btn_play = new JButton(new ImageIcon("resources/play.png"));
-		btn_stop = new JButton(new ImageIcon("resources/stop.png"));
-		btn_next = new JButton(new ImageIcon("resources/next.png"));
-		btn_previous = new JButton(new ImageIcon("resources/previous.png"));
-		btn_repeat = new JButton("Repeat");
-		btn_random = new JButton("Random");
-
-		btn_play.addActionListener(this);
-		btn_stop.addActionListener(this);
-		btn_next.addActionListener(this);
-		btn_previous.addActionListener(this);
-		btn_random.addActionListener(this);
-		btn_repeat.addActionListener(this);
-
-		down.add(btn_repeat);
-		down.add(btn_random);
-		down.add(btn_previous);
-		down.add(btn_stop);
-		down.add(btn_play);
-		down.add(btn_next);
 
 		generateTable();
 
@@ -165,58 +144,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btn_play) {
-			if(lb_list.getModel().getSize() != 0){
-				if (!lb_list.isSelectionEmpty()) {
-					controller.play(lb_list.getSelectedValue());
-				}
-				else{
-					controller.play(lb_list.getModel().getElementAt(0));
-				}
-			}
-			else{
-				if(!controller.getSelection().isEmpty()){
-					controller.setSelectionPlaylist(controller.getSelection());
-					this.updatePlayList();
-					if(this.tableau.getSelectedRow() != -1){
-						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					else{
-						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					
-				}
-			}
-		} else if (e.getSource() == btn_next) {
-			controller.next();
-		} else if (e.getSource() == btn_previous) {
-			controller.previous();
-		} else if (e.getSource() == btn_random) {
-			controller.random();
-		} else if (e.getSource() == btn_repeat) {
-			controller.repeat();
-		} else if (e.getSource() == btn_stop) {
-			if(lb_list.getModel().getSize() != 0){
-				if (!lb_list.isSelectionEmpty()) {
-					controller.stop(lb_list.getSelectedValue());
-				}
-				else{
-					controller.stop(lb_list.getModel().getElementAt(0));
-				}
-			}
-			else{
-				if(!controller.getSelection().isEmpty()){
-					controller.setSelectionPlaylist(controller.getSelection());
-					if(this.tableau.getSelectedRow() != -1){
-						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					else{
-						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-					
-				}
-			}
-		} else if (e.getSource() == mi_chooseFolder) {
+		if (e.getSource() == mi_chooseFolder) {
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);

@@ -4,12 +4,17 @@
  */
 package View;
 
+import Controller.Controller;
 import com.sun.jna.NativeLibrary;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -21,6 +26,8 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 
 	private EmbeddedMediaPlayerComponent ourMediaPlayer;
 	private String mediaPath = "";
+	private JList<String> lb_list;
+	private ButtonBar buttonBar;
 
 	public EmbeddedMediaPlayerComponent getOurMediaPlayer() {
 		return ourMediaPlayer;
@@ -38,12 +45,16 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 		this.mediaPath = mediaPath;
 	}
 
-	public MediaPlayer(String mediaPath) {
+	public MediaPlayer(String mediaPath, ButtonBar buttonBar) {
+		this.buttonBar = buttonBar;
 		this.mediaPath = mediaPath;
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "BibliVlcJ\\");
 		ourMediaPlayer = new EmbeddedMediaPlayerComponent();
-		ourMediaPlayer.addMouseListener(this);
-		this.setContentPane(ourMediaPlayer);
+		this.ourMediaPlayer.setPreferredSize(new Dimension(1200, 600));
+		this.setLayout(new BorderLayout());
+		this.addMouseListener(this);
+		this.add(ourMediaPlayer, BorderLayout.CENTER);
+		this.add(buttonBar, BorderLayout.SOUTH);
 		this.setSize(1200, 800);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,8 +82,13 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 	}
 
 	public void changeFile(String path) throws InterruptedException {
-		ourMediaPlayer.getMediaPlayer().release();
-		ourMediaPlayer.getMediaPlayer().playMedia(mediaPath, "0");
+		this.ourMediaPlayer.getMediaPlayer().release();
+		this.remove(ourMediaPlayer);
+		this.ourMediaPlayer = new EmbeddedMediaPlayerComponent();
+		this.add(ourMediaPlayer, BorderLayout.CENTER);
+		this.mediaPath = path;
+		this.revalidate();
+		this.repaint();
 	}
 
 	public void fullScreen() {
@@ -80,6 +96,16 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 		this.setExtendedState(MAXIMIZED_BOTH);
 	}
 
+	public void setVolume(int newValue) {
+		this.ourMediaPlayer.getMediaPlayer().setVolume(newValue);
+	}
+	
+	public void setTime(long newValue) {
+		long length = this.ourMediaPlayer.getMediaPlayer().getLength();
+		long newValueInMs = (length * newValue) / 3600;
+		this.ourMediaPlayer.getMediaPlayer().setTime(newValueInMs);
+	}
+	
 	public void repeat() {
 		ourMediaPlayer.getMediaPlayer().setRepeat(!ourMediaPlayer.getMediaPlayer().getRepeat());
 	}
