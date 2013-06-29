@@ -115,11 +115,7 @@ public class FindFiles extends Observable implements Runnable {
 		if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mp3") || file.endsWith(".mkv")) {
 			fileSelect.setIdFile(lastId);
 			fileSelect.setTitle(file.substring(0, file.length() - 4));
-<<<<<<< HEAD
-			fileSelect.setPath(pathOfSubDirectory + file);
-=======
-			fileSelect.setPath(pathOfSubDirectory + "\\" + file);
->>>>>>> cecbc1c03ecaf066d58660f08e8d3911877bc521
+			fileSelect.setPath(pathOfSubDirectory + "\\" +file);
 			fileSelect.setDate("2000-01-01");
 			fileSelect.setFind(true);
 			if (!checkExistentFile(fileSelect.getPath())) {
