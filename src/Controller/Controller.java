@@ -255,11 +255,17 @@ public class Controller extends Observable {
 			Media m = new Media();
 			m = m.getMediaByName(name);
 			if (mediaPlayer instanceof MediaPlayer) {
+<<<<<<< HEAD
 				//mediaPlayer.dispose();
 				//mediaPlayer = new MediaPlayer(m.getPath());
 				mediaPlayer.changeFile(m.getPath());
 			} else {
 				mediaPlayer = new MediaPlayer(m.getPath(), buttonBar);
+=======
+				mediaPlayer.changeFile(name);
+			} else {
+				mediaPlayer = new MediaPlayer(m.getPath());
+>>>>>>> b97003eeb42ebe6c2c1dd88d1e0a7cda1a76f806
 			}
 			mediaPlayer.run();
 		} catch (MonException ex) {
@@ -408,5 +414,16 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		return med;
+	}
+
+	public Media getMediaByName(String name) {
+		Media m = new Media();
+		try {
+			m = m.getMediaByName(name);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+		return m;
 	}
 }
