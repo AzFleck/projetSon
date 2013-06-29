@@ -28,14 +28,8 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
-<<<<<<< HEAD
 import javax.swing.BoxLayout;
-=======
-import java.util.logging.Level;
-import java.util.logging.Logger;
->>>>>>> c518068c04c092f8d8602984a0ac4917326b1a18
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -153,56 +147,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-<<<<<<< HEAD
 		if (e.getSource() == mi_chooseFolder) {
-=======
-		if (e.getSource() == btn_play) {
-			if (lb_list.getModel().getSize() != 0) {
-				if (!lb_list.isSelectionEmpty()) {
-					controller.play(lb_list.getSelectedValue());
-				} else {
-					controller.play(lb_list.getModel().getElementAt(0));
-				}
-			} else {
-				if (!controller.getSelection().isEmpty()) {
-					controller.setSelectionPlaylist(controller.getSelection());
-					this.updatePlayList();
-					if (this.tableau.getSelectedRow() != -1) {
-						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					} else {
-						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-
-				}
-			}
-		} else if (e.getSource() == btn_next) {
-			controller.next();
-		} else if (e.getSource() == btn_previous) {
-			controller.previous();
-		} else if (e.getSource() == btn_random) {
-			controller.random();
-		} else if (e.getSource() == btn_repeat) {
-			controller.repeat();
-		} else if (e.getSource() == btn_stop) {
-			if (lb_list.getModel().getSize() != 0) {
-				if (!lb_list.isSelectionEmpty()) {
-					controller.stop(lb_list.getSelectedValue());
-				} else {
-					controller.stop(lb_list.getModel().getElementAt(0));
-				}
-			} else {
-				if (!controller.getSelection().isEmpty()) {
-					controller.setSelectionPlaylist(controller.getSelection());
-					if (this.tableau.getSelectedRow() != -1) {
-						System.out.println(tableau.getValueAt(tableau.getSelectedRow(), tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					} else {
-						System.out.println(tableau.getValueAt(0, tableau.getColumnModel().getColumnIndex(new String("Path"))).toString());
-					}
-
-				}
-			}
-		} else if (e.getSource() == mi_chooseFolder) {
->>>>>>> b97003eeb42ebe6c2c1dd88d1e0a7cda1a76f806
 			JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
@@ -282,16 +227,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			Database.createDatabase("BddSonVideo.sql");
-		} catch (MonException ex) {
+		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(null, ex.getMessage());
-		} catch (ClassNotFoundException ex) {
-			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (UnsupportedLookAndFeelException ex) {
-			Logger.getLogger(WindowMedia.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		WindowMedia windowMedia = new WindowMedia();
 		windowMedia.setVisible(true);
