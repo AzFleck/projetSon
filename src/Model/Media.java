@@ -21,6 +21,20 @@ public class Media implements Cloneable{
 	protected String path;
 	protected boolean find;
 	protected String length;
+	protected ArrayList<Person> artists; // acteurs ou chanteurs
+
+	public Media() {
+		sort = new ArrayList<String>();
+		artists = new ArrayList<Person>();
+	}
+	
+	public ArrayList<Person> getArtists() {
+		return artists;
+	}
+
+	public void setArtists(ArrayList<Person> artists) {
+		this.artists = artists;
+	}
 
 	public int getIdFile() {
 		return idFile;
@@ -113,6 +127,7 @@ public class Media implements Cloneable{
 			this.setIdFile(rs.getInt("idfile"));
 			this.setLength(rs.getString("length"));
 			this.setFind(rs.getBoolean("find"));
+			this.getAllArtists();
 		} catch (SQLException ex) {
 			throw new MonException(ex.getMessage());
 		}
@@ -216,5 +231,18 @@ public class Media implements Cloneable{
 		med.setFind(this.isFind());
 		med.setSort(this.getSort());
 		return med;
+	}
+	
+	private void getAllArtists() throws MonException{
+		String req = "Select idperson from personfile where idtype != 2 and idfile = " + this.getIdFile();
+		Person p = new Person();
+		try {
+			ResultSet result = Database.read(req);
+			while (result.next()) {
+				this.getArtists().add(p.getPersonById(result.getInt(1)));
+			}
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
 	}
 }

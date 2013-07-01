@@ -5,10 +5,10 @@ INSERT INTO Type VALUES (3, 'Artist');
 INSERT INTO Album VALUES (1, 'Album1', '2013-01-01');
 INSERT INTO Album VALUES (2, 'Album2', '2011-01-01');
 
-INSERT INTO Person VALUES (1, 'Willis', 'Bruce', 'American');
-INSERT INTO Person VALUES (2, 'Dujardin', 'Jean', 'French');
-INSERT INTO Person VALUES (3, 'Fox', 'Megan', 'American');
-INSERT INTO Person VALUES (4, 'Guetta', 'David', 'French');
+INSERT INTO Person VALUES (1, 'Willis', 'Bruce', 'American', 2000-11-01);
+INSERT INTO Person VALUES (2, 'Dujardin', 'Jean', 'French', 2000-11-01);
+INSERT INTO Person VALUES (3, 'Fox', 'Megan', 'American', 2000-11-01);
+INSERT INTO Person VALUES (4, 'Guetta', 'David', 'French', 2000-11-01);
 
 INSERT INTO File VALUES (1, 'Transformers', '2013-01-01', '90', "//Ici", 0);
 INSERT INTO File VALUES (2, 'Armageddon', '2008-01-01', '98', "//Ici", 0);

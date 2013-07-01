@@ -20,6 +20,7 @@ CREATE  TABLE 'Person' (
   'LastName' VARCHAR(45) NOT NULL ,
   'FirstName' VARCHAR(45) NOT NULL ,
   'Nationality' VARCHAR(45) NULL ,
+  'DateOfBirth' DATE NULL ,
   PRIMARY KEY ('idPerson') );
 
 CREATE  TABLE 'Type' (
