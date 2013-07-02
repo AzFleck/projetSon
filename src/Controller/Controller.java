@@ -16,12 +16,15 @@ import Model.Movie;
 import Model.Music;
 import Model.Person;
 import Model.PlayList;
+import View.AddSomething;
 import View.ButtonBar;
 import View.ImportFile;
 import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Quentin
@@ -36,7 +39,7 @@ public class Controller extends Observable {
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
-			
+
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
@@ -281,7 +284,7 @@ public class Controller extends Observable {
 	}
 
 	public void stop() {
-			mediaPlayer.stop();
+		mediaPlayer.stop();
 	}
 
 	public void next() {
@@ -298,11 +301,11 @@ public class Controller extends Observable {
 
 	public void chooseFolder() {
 	}
-	
+
 	public void setVolume(int newValue) {
 		mediaPlayer.setVolume(newValue);
 	}
-	
+
 	public void setTime(long newValue) {
 		mediaPlayer.setTime(newValue);
 	}
@@ -420,5 +423,23 @@ public class Controller extends Observable {
 			this.notifyObservers(ex);
 		}
 		return m;
+	}
+
+	public void addSomeone(Object o) {
+		try {
+			new AddSomething(1, (JFrame) o ).addObserver((Observer) o);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+	}
+
+	public void addSort(Object o) {
+		try {
+			new AddSomething(2, (JFrame) o ).addObserver((Observer) o);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
 	}
 }

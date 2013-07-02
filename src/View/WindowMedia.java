@@ -83,6 +83,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private JPanel middle;
 	private JPanel detail;
 	private boolean passer_par_listener;
+	private JButton btn_artist;
+	private JButton btn_sort;
 
 	public WindowMedia() {
 		controller = new Controller();
@@ -150,6 +152,12 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.showOpenDialog(this);
 			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath(), this);
+		}
+		else if (e.getSource() == btn_artist){
+			controller.addSomeone(this);
+		}
+		else if (e.getSource() == btn_sort){
+			controller.addSort(this);
 		}
 	}
 
@@ -367,8 +375,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	public void generateDetail(String name) {
 		detail.removeAll();
-		JButton btn_artist = new JButton("+");
-		JButton btn_sort = new JButton("+");
+		btn_artist = new JButton("+");
+		btn_sort = new JButton("+");
+		btn_artist.addActionListener(this);
+		btn_sort.addActionListener(this);
 		Media m = controller.getMediaByName(name);
 		JPanel pnl_genre = new JPanel();
 		JPanel pnl_artists = new JPanel();
