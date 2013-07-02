@@ -58,7 +58,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	private JMenuBar mb_menuBar;
 	private JMenu m_file;
+	private JMenu m_edit;
 	private JMenuItem mi_chooseFolder;
+	private JMenuItem mi_addSort;
+	private JMenuItem mi_addPerson;
+	private JMenuItem mi_addAlbum;
 	private JButton btn_play;
 	private JButton btn_stop;
 	private JButton btn_next;
@@ -100,7 +104,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		//Gestion menubar
 		mb_menuBar = new JMenuBar();
 		m_file = new JMenu("File");
+		m_edit = new JMenu("Edition");
 		mi_chooseFolder = new JMenuItem("Import folder");
+		mi_addSort = new JMenuItem("Add a sort");
+		mi_addPerson = new JMenuItem("Add a person");
+		mi_addAlbum = new JMenuItem("Add an album");
 
 		mb_menuBar.add(m_file);
 		m_file.add(mi_chooseFolder);
