@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Observable;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -21,13 +20,12 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
  *
  * @author Quentin
  */
-public class MediaPlayer extends Observable implements WindowListener, MouseListener {
+public class MediaPlayer extends JFrame implements WindowListener, MouseListener {
 
 	private EmbeddedMediaPlayerComponent ourMediaPlayer;
 	private String mediaPath = "";
 	private JList<String> lb_list;
 	private ButtonBar buttonBar;
-	private JFrame frame;
 
 	public EmbeddedMediaPlayerComponent getOurMediaPlayer() {
 		return ourMediaPlayer;
@@ -51,13 +49,13 @@ public class MediaPlayer extends Observable implements WindowListener, MouseList
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "BibliVlcJ\\");
 		ourMediaPlayer = new EmbeddedMediaPlayerComponent();
 		this.ourMediaPlayer.setPreferredSize(new Dimension(1200, 600));
-		frame.setLayout(new BorderLayout());
-		frame.addMouseListener(this);
-		frame.add(ourMediaPlayer, BorderLayout.CENTER);
-		frame.add(buttonBar, BorderLayout.SOUTH);
-		frame.setSize(1200, 800);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setLayout(new BorderLayout());
+		this.addMouseListener(this);
+		this.add(ourMediaPlayer, BorderLayout.CENTER);
+		this.add(buttonBar, BorderLayout.SOUTH);
+		this.setSize(1200, 800);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	public void run() throws InterruptedException {
@@ -83,12 +81,12 @@ public class MediaPlayer extends Observable implements WindowListener, MouseList
 
 	public void changeFile(String path) throws InterruptedException {
 		this.ourMediaPlayer.getMediaPlayer().release();
-		frame.remove(ourMediaPlayer);
+		this.remove(ourMediaPlayer);
 		this.ourMediaPlayer = new EmbeddedMediaPlayerComponent();
-		frame.add(ourMediaPlayer, BorderLayout.CENTER);
+		this.add(ourMediaPlayer, BorderLayout.CENTER);
 		this.mediaPath = path;
-		frame.revalidate();
-		frame.repaint();
+		this.revalidate();
+		this.repaint();
 	}
 
 	public void fullScreen() {
