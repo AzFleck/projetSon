@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.Controller;
 import com.sun.jna.NativeLibrary;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -12,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -24,7 +24,6 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 
 	private EmbeddedMediaPlayerComponent ourMediaPlayer;
 	private String mediaPath = "";
-	private JList<String> lb_list;
 	private ButtonBar buttonBar;
 
 	public EmbeddedMediaPlayerComponent getOurMediaPlayer() {
@@ -43,11 +42,11 @@ public class MediaPlayer extends JFrame implements WindowListener, MouseListener
 		this.mediaPath = mediaPath;
 	}
 
-	public MediaPlayer(String mediaPath, ButtonBar buttonBar) {
-		this.buttonBar = buttonBar;
+	public MediaPlayer(String mediaPath, Controller controller) {
 		this.mediaPath = mediaPath;
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "BibliVlcJ\\");
 		ourMediaPlayer = new EmbeddedMediaPlayerComponent();
+		buttonBar = new ButtonBar(controller);
 		this.ourMediaPlayer.setPreferredSize(new Dimension(1200, 600));
 		this.setLayout(new BorderLayout());
 		this.addMouseListener(this);

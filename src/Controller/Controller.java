@@ -39,6 +39,8 @@ public class Controller extends Observable {
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
+	private String selectedFile; //Fichier en cours de lecture
+	private boolean isPlayed, playPause; //Lecture lancée
 
 	public Controller() {
 		this.currentPlayList = null;
@@ -47,6 +49,30 @@ public class Controller extends Observable {
 		this.selection = new ArrayList<Media>();
 		this.playlists = new HashMap<String, PlayList>();
 		this.selectionPlaylist = new ArrayList<Media>();
+	}
+
+	public boolean isIsPlayed() {
+		return isPlayed;
+	}
+
+	public void setIsPlayed(boolean isPlayed) {
+		this.isPlayed = isPlayed;
+	}
+
+	public boolean isPlayPause() {
+		return playPause;
+	}
+
+	public void setPlayPause(boolean playPause) {
+		this.playPause = playPause;
+	}
+
+	public String getSelectedFile() {
+		return selectedFile;
+	}
+
+	public void setSelectedFile(String selectedFile) {
+		this.selectedFile = selectedFile;
 	}
 
 	public ArrayList<Media> getSelectionPlaylist() {
@@ -262,7 +288,7 @@ public class Controller extends Observable {
 				//mediaPlayer = new MediaPlayer(m.getPath());
 				mediaPlayer.changeFile(m.getPath());
 			} else {
-				mediaPlayer = new MediaPlayer(m.getPath(), buttonBar);
+				mediaPlayer = new MediaPlayer(m.getPath(), this);
 			}
 			mediaPlayer.run();
 		} catch (MonException ex) {
@@ -274,8 +300,8 @@ public class Controller extends Observable {
 		}
 	}
 
-	public void playPause(boolean state) {
-		if (state) {
+	public void playPause() {
+		if (playPause) {
 			mediaPlayer.play();
 		} else {
 			mediaPlayer.pause();
