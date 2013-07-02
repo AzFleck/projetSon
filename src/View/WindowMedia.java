@@ -89,6 +89,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private boolean passer_par_listener;
 	private JButton btn_artist;
 	private JButton btn_sort;
+	private JPanel left;
 
 	public WindowMedia() {
 		controller = new Controller();
@@ -111,8 +112,15 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		mi_addAlbum = new JMenuItem("Add an album");
 
 		mb_menuBar.add(m_file);
+		mb_menuBar.add(m_edit);
 		m_file.add(mi_chooseFolder);
+		m_edit.add(mi_addSort);
+		m_edit.add(mi_addPerson);
+		m_edit.add(mi_addAlbum);
 		mi_chooseFolder.addActionListener(this);
+		mi_addSort.addActionListener(this);
+		mi_addPerson.addActionListener(this);
+		mi_addAlbum.addActionListener(this);
 		this.setJMenuBar(mb_menuBar);
 		
 		//Panel right
@@ -123,7 +131,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		
 		//Gestion des Jpanel
 		total.setLayout(new BorderLayout());
-		JPanel left = new JPanel();
+		left = new JPanel();
 		JPanel right = new JPanel();
 		middle = new JPanel();
 		detail = new JPanel();
@@ -162,10 +170,19 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			controller.getAllFiles(fc.getSelectedFile().getAbsolutePath(), this);
 		}
 		else if (e.getSource() == btn_artist){
-			controller.addSomeone(this);
+			
 		}
 		else if (e.getSource() == btn_sort){
+			
+		}
+		else if(e.getSource() == mi_addSort){
 			controller.addSort(this);
+		}
+		else if(e.getSource() == mi_addAlbum){
+			controller.addAlbum(this);
+		}
+		else if(e.getSource() == mi_addPerson){
+			controller.addSomeone(this);
 		}
 	}
 
@@ -259,10 +276,21 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				this.updatePlayList();
 			} else if (s.equals("Middle")) {
 				this.generateTable();
+			} else if (s.equals("maj")){
+				this.updateTree();
 			}
 		}
 	}
 
+	public void updateTree(){
+		this.createTree();
+		left.removeAll();
+		tree.setPreferredSize(new Dimension(200, 0));
+		this.left.add(new JScrollPane(tree), BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+	}
+	
 	public void updatePlayList() {
 		lb_list.removeAll();
 		lb_list.addKeyListener(this);

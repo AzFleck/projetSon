@@ -16,6 +16,7 @@ import Model.Movie;
 import Model.Music;
 import Model.Person;
 import Model.PlayList;
+import Model.Sort;
 import View.AddSomething;
 import View.ButtonBar;
 import View.ImportFile;
@@ -23,6 +24,8 @@ import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -426,7 +429,7 @@ public class Controller extends Observable {
 
 	public void addSomeone(Object o) {
 		try {
-			new AddSomething(1, (JFrame) o ).addObserver((Observer) o);
+			new AddSomething(1, (JFrame) o , this).addObserver((Observer) o);
 		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
@@ -435,7 +438,46 @@ public class Controller extends Observable {
 
 	public void addSort(Object o) {
 		try {
-			new AddSomething(2, (JFrame) o ).addObserver((Observer) o);
+			new AddSomething(2, (JFrame) o , this).addObserver((Observer) o);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+	}
+
+	public void addAlbum(Object o) {
+		try {
+			new AddSomething(3, (JFrame) o , this).addObserver((Observer) o);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+	}
+	
+	public void insertSort(String libelle, int type){
+		Sort s = new Sort();
+		try {
+			s.insertSort(libelle, type);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+	}
+	
+	public void insertAlbum(String libelle, String date){
+		Album a = new Album();
+		try {
+			a.insertAlbum(libelle, date);
+		} catch (MonException ex) {
+			this.setChanged();
+			this.notifyObservers(ex);
+		}
+	}
+	
+	public void insertPerson(String nom, String prenom, String nationality, String date){
+		Person p = new Person();
+		try {
+			p.insertPerson(nom, prenom, nationality, date);
 		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);

@@ -131,4 +131,39 @@ public class Person {
 		}
 		return person;
 	}
+
+	/**
+	 * Renvoi l'id maximum des personnes
+	 *
+	 * @return id max dans la base
+	 */
+	public int getMaxIdPerson() throws MonException {
+		String req = "Select max(idperson) from person";
+		int maxId = -1;
+		try {
+			ResultSet result = Database.read(req);
+			result.next();
+			maxId = result.getInt(1);
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
+		return maxId;
+	}
+
+	/**
+	 * Fais l'insertion dans la base d'un nouvel album
+	 */
+	public void insertPerson(String nom, String prenom, String nationality, String date) throws MonException {
+		this.setId(this.getMaxIdPerson() + 1);
+		this.setNom(nom);
+		this.setPrenom(prenom);
+		this.setNationality(nationality);
+		this.setDate(date);
+		String reqPers = "insert into person values(" + this.getId() + ", '" + this.getNom() + "', '" + this.getPrenom() + "', '" + this.getNationality()+ "', "+ this.getDate()+ ");";
+		try {
+			Database.write(reqPers);
+		} catch (MonException e) {
+			throw e;
+		}
+	}
 }
