@@ -113,4 +113,22 @@ public class Person {
 		}
 		return medias;
 	}
+	
+	public Person getPersonById(int idPerson) throws MonException{
+		Person person = new Person();
+		String req = "select * from Person where idperson = " + idPerson;
+		try {
+			ResultSet result = Database.read(req);
+			while (result.next()) {
+				person.setId(result.getInt("idperson"));
+				person.setNom(result.getString("lastname"));
+				person.setPrenom(result.getString("firstname"));
+				person.setNationality(result.getString("nationality"));
+				person.setDate(result.getString("dateofbirth"));
+			}
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
+		return person;
+	}
 }
