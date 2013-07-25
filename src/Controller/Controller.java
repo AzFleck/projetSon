@@ -24,8 +24,6 @@ import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -42,8 +40,10 @@ public class Controller extends Observable {
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
+    private boolean Played, PlayPause; //Fichier en lecture/pause
+	private String selectedFile; //Fichier en cours de lecture
 	private String selectedMiddleFile; //zone centrale pour fenetre détail
-
+    
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
@@ -54,6 +54,36 @@ public class Controller extends Observable {
 		this.selectionPlaylist = new ArrayList<Media>();
 	}
 
+    public void playPause()
+    {
+            Played = !Played;
+    }
+       
+    public boolean isPlayPause() {
+        return PlayPause;
+    }
+
+    public void setPlayPause(boolean PlayPause) {
+        this.PlayPause = PlayPause;
+    }
+
+    
+    public boolean isPlayed() {
+        return Played;
+    }
+
+    public void setPlayed(boolean Played) {
+        this.Played = Played;
+    }
+
+    public String getSelectedFile() {
+        return selectedFile;
+    }
+
+    public void setSelectedFile(String selectedFile) {
+        this.selectedFile = selectedFile;
+    }
+    
 	public String getSelectedMiddleFile() {
 		return selectedMiddleFile;
 	}

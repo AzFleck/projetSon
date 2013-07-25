@@ -13,7 +13,6 @@ import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -82,8 +81,8 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
-			if (!controller.isIsPlayed()) {
-				controller.setIsPlayed(true);
+			if (!controller.isPlayed()) {
+				controller.setPlayed(true);
 				controller.play(controller.getSelectedFile(), this);
 			} else {
 				if (controller.isPlayPause()) {
@@ -104,7 +103,7 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 			controller.repeat();
 		} else if (e.getSource() == btn_stop) {
 			controller.stop();
-			controller.setIsPlayed(false);
+			controller.setPlayed(false);
 		} else if (e.getSource() == btn_mute) {
 			if (isMute) {
 				controller.setVolume(s_volume.getValue());

@@ -29,13 +29,13 @@ public class FindFiles extends Observable implements Runnable {
 
 	public void findNumberOfFile() throws MonException {
 		Media fileSelect = new Media();
-		String pathOfAllFiles = pathOfDirectory + "\\";
+		String pathOfAllFiles = pathOfDirectory + "/";
 		File f = new File(pathOfAllFiles);
 		String[] list = f.list();
 		for (int i = 0; i < list.length; i++) {
 			File selectedFile = new File(pathOfAllFiles + list[i]);
 			if (selectedFile.isDirectory()) {
-				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "/", fileSelect);
 			}
 			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
 				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
@@ -49,9 +49,9 @@ public class FindFiles extends Observable implements Runnable {
 	public void findNumberOfFileInSubDirectory(String pathOfSubDirectory, Media fileSelect) throws MonException {
 		String[] list = new File(pathOfSubDirectory).list();
 		for (int i = 0; i < list.length; i++) {
-			File selectedFile = new File(pathOfSubDirectory + "\\" + list[i]);
+			File selectedFile = new File(pathOfSubDirectory + "/" + list[i]);
 			if (selectedFile.isDirectory()) {
-				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+				findNumberOfFileInSubDirectory(selectedFile.getAbsolutePath() + "/", fileSelect);
 			}
 			if (list[i].endsWith(".avi") || list[i].endsWith(".mp4") || list[i].endsWith(".mp3") || list[i].endsWith(".mkv")) {
 				fileSelect.setTitle(list[i].substring(0, list[i].length() - 4));
@@ -76,7 +76,7 @@ public class FindFiles extends Observable implements Runnable {
 
 		//Chemin du dossier selectionné + \ pour
 		//récuperer les sous dossier
-		String pathOfAllFiles = pathOfDirectory + "\\";
+		String pathOfAllFiles = pathOfDirectory + "/";
 
 		//Création d'un File pour recuperer la liste
 		//des sous dossier et fichiers contenu dans
@@ -90,7 +90,7 @@ public class FindFiles extends Observable implements Runnable {
 		for (int i = 0; i < list.length; i++) {
 			File selectedFile = new File(pathOfAllFiles + list[i]);
 			if (selectedFile.isDirectory()) {
-				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "/", fileSelect);
 			}
 			this.createReq(f.getAbsolutePath(), fileSelect, list[i]);
 		}
@@ -103,9 +103,9 @@ public class FindFiles extends Observable implements Runnable {
 		String[] list = new File(pathOfSubDirectory).list();
 
 		for (int i = 0; i < list.length; i++) {
-			File selectedFile = new File(pathOfSubDirectory + "\\" + list[i]);
+			File selectedFile = new File(pathOfSubDirectory + "/" + list[i]);
 			if (selectedFile.isDirectory()) {
-				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "\\", fileSelect);
+				getAllFilesInSubDirectory(selectedFile.getAbsolutePath() + "/", fileSelect);
 			}
 			this.createReq(pathOfSubDirectory, fileSelect, list[i]);
 		}
@@ -115,7 +115,7 @@ public class FindFiles extends Observable implements Runnable {
 		if (file.endsWith(".avi") || file.endsWith(".mp4") || file.endsWith(".mp3") || file.endsWith(".mkv")) {
 			fileSelect.setIdFile(lastId);
 			fileSelect.setTitle(file.substring(0, file.length() - 4));
-			fileSelect.setPath(pathOfSubDirectory + "\\" +file);
+			fileSelect.setPath(pathOfSubDirectory + "/" +file);
 			fileSelect.setDate("2000-01-01");
 			fileSelect.setFind(true);
 			if (!checkExistentFile(fileSelect.getPath())) {
