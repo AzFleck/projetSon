@@ -381,8 +381,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 					this.updatePlayList();
 				}
 				else{
-					this.controller.setSelectedFile(tableau.getValueAt(tableau.getSelectedRow(),tableau.getColumnModel().getColumnIndex(new String("Title"))).toString());
-					this.generateDetail(this.controller.getSelectedFile());
+					this.controller.setSelectedMiddleFile(tableau.getValueAt(tableau.getSelectedRow(),tableau.getColumnModel().getColumnIndex(new String("Title"))).toString());
+					this.generateDetail(this.controller.getSelectedMiddleFile());
 				}
 			}
 		}
@@ -496,6 +496,6 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		controller.setSelectedFile(lb_list.getSelectedValue());
+		controller.setSelectedMiddleFile(lb_list.getSelectedValue());
 	}
 }
