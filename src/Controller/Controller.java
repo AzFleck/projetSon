@@ -24,8 +24,6 @@ import View.MediaPlayer;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -43,7 +41,7 @@ public class Controller extends Observable {
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
 	private String selectedFile; //zone centrale pour fenetre détail
-
+    
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
