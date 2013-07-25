@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.Controller;
 import Model.MonException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -29,30 +30,40 @@ public class AddSomething extends Observable implements ActionListener{
 	private JTextField[] text_fields;
 	private JButton btn_add;
 	private JPanel pnl_total;
+	private Controller controller;
+	private JComboBox<String> cbb_Type;
 
-	public AddSomething(int typeOfAdd, JFrame parent) throws MonException {
+	public AddSomething(int typeOfAdd, JFrame parent, Controller controller) throws MonException {
+		this.controller = controller;
 		this.typeOfAdd = typeOfAdd;
 		int nb_text;
 		this.frame = new JFrame();
 		this.frame.setLocationRelativeTo(parent);
 		if (this.typeOfAdd == 1) {
+			this.frame.setMinimumSize(new Dimension(300, 150));
 			this.frame.setTitle("Add a person");
 			nb_text = 4;
 		} else if (this.typeOfAdd == 2) {
+			this.frame.setMinimumSize(new Dimension(300, 100));
 			this.frame.setTitle("Add a sort");
 			nb_text = 1;
+		} else if (this.typeOfAdd == 3) {
+			this.frame.setMinimumSize(new Dimension(300, 100));
+			this.frame.setTitle("Add an album");
+			nb_text = 2;
 		} else {
 			throw new MonException("Erreur de paramètre pour l'ajout");
 		}
 		this.text_fields = new JTextField[nb_text];
 		this.frame.setLayout(new BorderLayout());
-		this.frame.setMinimumSize(new Dimension(300, 150));
 		this.frame.setVisible(true);
 		pnl_total = new JPanel();
 		if (this.typeOfAdd == 1) {
 			this.addPerson();
-		} else {
+		} else if(this.typeOfAdd == 2) {
 			this.addSort();
+		} else {
+			this.addAlbum();
 		}
 		this.frame.add(pnl_total, BorderLayout.CENTER);
 		this.frame.setResizable(false);
@@ -68,8 +79,8 @@ public class AddSomething extends Observable implements ActionListener{
 		text_fields[1] = new JTextField();
 		JLabel lbl_nat = new JLabel("Nationality : ");
 		text_fields[2] = new JTextField();
-		JLabel lbl_date = new JLabel("Date of birth : ");
-		text_fields[3] = new JTextField("YYYY-MM-DD");
+		JLabel lbl_date = new JLabel("Year of birth : ");
+		text_fields[3] = new JTextField();
 		pnl_total.setLayout(new GridLayout(4, 2));
 		pnl_total.add(lbl_nom);
 		pnl_total.add(text_fields[0]);
@@ -83,22 +94,49 @@ public class AddSomething extends Observable implements ActionListener{
 
 	private void addSort() {
 		JLabel lbl_nom = new JLabel("Sort name : ");
-		JTextField txt_nom = new JTextField();
+		text_fields[0] = new JTextField();
 		JLabel lbl_type = new JLabel("Sort's Category : ");
-		JComboBox<String> cbb_Type = new JComboBox<String>();
+		cbb_Type = new JComboBox<String>();
 		cbb_Type.addItem("Music");
 		cbb_Type.addItem("Movie");
 		pnl_total.setLayout(new GridLayout(2, 2));
 		pnl_total.add(lbl_nom);
-		pnl_total.add(txt_nom);
+		pnl_total.add(text_fields[0]);
 		pnl_total.add(lbl_type);
 		pnl_total.add(cbb_Type);
+	}
+
+	private void addAlbum() {
+		JLabel lbl_nom = new JLabel("Album name : ");
+		text_fields[0] = new JTextField();
+		JLabel lbl_date = new JLabel("Release date : ");
+		text_fields[1] = new JTextField("YYYY-MM-DD");
+		pnl_total.setLayout(new GridLayout(2, 2));
+		pnl_total.add(lbl_nom);
+		pnl_total.add(text_fields[0]);
+		pnl_total.add(lbl_date);
+		pnl_total.add(text_fields[1]);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btn_add){
-			
+			if(typeOfAdd == 1) {
+				controller.insertPerson(text_fields[0].getText(), text_fields[1].getText(), text_fields[2].getText(), text_fields[3].getText());
+			} else if(typeOfAdd == 2) {
+				int type;
+				if(cbb_Type.getSelectedItem().equals("Music")){
+					type = 2;
+				}else {
+					type = 1;
+				}
+				controller.insertSort(text_fields[0].getText(), type);
+			} else {
+				controller.insertAlbum(text_fields[0].getText(), text_fields[1].getText());
+			}
+			this.setChanged();
+			this.notifyObservers("maj");
+			this.frame.dispose();
 		}
 	}
 }

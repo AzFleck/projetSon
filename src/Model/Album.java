@@ -127,4 +127,37 @@ public class Album {
 		}
 		return medias;
 	}
+
+	/**
+	 * Renvoi l'id maximum des album
+	 *
+	 * @return id max dans la base
+	 */
+	public int getMaxIdAlbum() throws MonException {
+		String req = "Select max(idalbum) from album";
+		int maxId = -1;
+		try {
+			ResultSet result = Database.read(req);
+			result.next();
+			maxId = result.getInt(1);
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
+		return maxId;
+	}
+
+	/**
+	 * Fais l'insertion dans la base d'un nouvel album
+	 */
+	public void insertAlbum(String lib, String date) throws MonException {
+		this.idAlbum = getMaxIdAlbum() + 1;
+		this.libelle = lib;
+		this.releaseDate = date;
+		String reqAlbum = "insert into album values(" + this.getIdAlbum() + ", '" + this.getLibelle() + "', '"+ this.getReleaseDate()+ "');";
+		try {
+			Database.write(reqAlbum);
+		} catch (MonException e) {
+			throw e;
+		}
+	}
 }
