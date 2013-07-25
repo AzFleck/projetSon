@@ -42,24 +42,24 @@ public class Controller extends Observable {
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
-	private String selectedFile; //zone centrale pour fenetre détail
+	private String selectedMiddleFile; //zone centrale pour fenetre détail
 
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
 		this.selectedItem = null;
-		this.selectedFile = null;
+		this.selectedMiddleFile = null;
 		this.selection = new ArrayList<Media>();
 		this.playlists = new HashMap<String, PlayList>();
 		this.selectionPlaylist = new ArrayList<Media>();
 	}
 
-	public String getSelectedFile() {
-		return selectedFile;
+	public String getSelectedMiddleFile() {
+		return selectedMiddleFile;
 	}
 
-	public void setSelectedFile(String selectedFile) {
-		this.selectedFile = selectedFile;
+	public void setSelectedMiddleFile(String selectedMiddleFile) {
+		this.selectedMiddleFile = selectedMiddleFile;
 	}
 
 	public ArrayList<Media> getSelectionPlaylist() {
@@ -497,7 +497,7 @@ public class Controller extends Observable {
 	public void addSortToFile(String sort){
 		Media m = new Media();
 		try {
-			m.addSortToFile(sort, this.getSelectedFile());
+			m.addSortToFile(sort, this.getSelectedMiddleFile());
 		} catch (MonException ex) {
 			this.setChanged();
 			this.notifyObservers(ex);
