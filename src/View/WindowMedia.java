@@ -381,7 +381,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 					this.updatePlayList();
 				}
 				else{
-					this.generateDetail(tableau.getValueAt(tableau.getSelectedRow(),tableau.getColumnModel().getColumnIndex(new String("Title"))).toString());
+					this.controller.setSelectedFile(tableau.getValueAt(tableau.getSelectedRow(),tableau.getColumnModel().getColumnIndex(new String("Title"))).toString());
+					this.generateDetail(this.controller.getSelectedFile());
 				}
 			}
 		}

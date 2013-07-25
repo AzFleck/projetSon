@@ -37,6 +37,7 @@ public class AddSort extends Observable implements ActionListener {
 		this.frame.setLayout(new BorderLayout());
 		this.frame.setVisible(true);
 		pnl_sort = new JPanel();
+		pnl_sort.setLayout(new BorderLayout());
 		cbb_Sort = new JComboBox<String>();
 		ArrayList<String> sorts;
 		if (parentType == 1) {
@@ -47,7 +48,7 @@ public class AddSort extends Observable implements ActionListener {
 		for (int i = 0; i < sorts.size(); i++) {
 			cbb_Sort.addItem(sorts.get(i));
 		}
-		pnl_sort.add(cbb_Sort);
+		pnl_sort.add(cbb_Sort, BorderLayout.CENTER);
 		this.frame.add(pnl_sort, BorderLayout.CENTER);
 		this.frame.setResizable(false);
 		btn_add = new JButton("Add");
@@ -57,5 +58,9 @@ public class AddSort extends Observable implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btn_add){
+			controller.addSortToFile(cbb_Sort.getSelectedItem().toString());
+			frame.dispose();
+		}
 	}
 }

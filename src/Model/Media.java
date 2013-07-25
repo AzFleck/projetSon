@@ -245,4 +245,25 @@ public class Media implements Cloneable{
 			throw new MonException(ex.getMessage());
 		}
 	}
+	
+	public void addSortToFile(String sort, String file) throws MonException{
+		String reqIdSort = "Select idsort from sort where libelle = \""+ sort + "\"";
+		String reqIdMedia = "Select idfile from file where title = \""+ file + "\"";
+		int idSort = 0;
+		int idMedia = 0;
+		try {
+			ResultSet result = Database.read(reqIdSort);
+			while (result.next()) {
+				idSort = result.getInt(1);
+			}
+			result = Database.read(reqIdMedia);
+			while (result.next()) {
+				idMedia = result.getInt(1);
+			}
+			String reqInsert = "Insert into filesort(idfile, idsort) values ("+ idMedia +", " + idSort +")";
+			Database.write(reqInsert);
+		} catch (SQLException ex) {
+			throw new MonException(ex.getMessage());
+		}
+	}
 }
