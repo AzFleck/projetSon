@@ -45,6 +45,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -53,7 +55,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Quentin
  */
-public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener, MouseListener, KeyListener {
+public class WindowMedia extends JFrame implements Observer, ActionListener, ItemListener, MouseListener, KeyListener, ListSelectionListener {
 	//Elements menu
 
 	private JMenuBar mb_menuBar;
@@ -126,6 +128,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		//Panel right
 		cbb_playList = new JComboBox<String>();
 		lb_list = new JList<String>();
+		lb_list.addListSelectionListener(this);
 		this.generateCbbPlaylist();
 		cbb_playList.addItemListener(this);
 		
@@ -137,7 +140,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		detail = new JPanel();
 		middle.setLayout(new BorderLayout());
 		JPanel up = new JPanel();
-		ButtonBar down = new ButtonBar(this.controller, this.lb_list);
+		ButtonBar down = new ButtonBar(this.controller);
 		left.setLayout(new BorderLayout());
 		total.add(left, BorderLayout.WEST);
 		total.add(right, BorderLayout.EAST);
@@ -489,5 +492,10 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 				this.updatePlayList();
 			}
 		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		controller.setSelectedFile(lb_list.getSelectedValue());
 	}
 }

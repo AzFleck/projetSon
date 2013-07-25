@@ -275,7 +275,7 @@ public class Controller extends Observable {
 				//mediaPlayer = new MediaPlayer(m.getPath());
 				mediaPlayer.changeFile(m.getPath());
 			} else {
-				mediaPlayer = new MediaPlayer(m.getPath(), buttonBar);
+				mediaPlayer = new MediaPlayer(m.getPath(), this);
 			}
 			mediaPlayer.run();
 		} catch (MonException ex) {

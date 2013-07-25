@@ -35,13 +35,10 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 	private JSlider s_time;
 	private JSlider s_volume;
 	private Controller controller;
-	private boolean playPause;
-	private boolean isPlayed;
-	private JList<String> lb_list;
+	private boolean isMute;
 
-	public ButtonBar(Controller controller, JList<String> lb_list) {
+	public ButtonBar(Controller controller) {
 		this.controller = controller;
-		this.lb_list = lb_list;
 		btn_play = new JButton(new ImageIcon("resources/play.png"));
 		btn_stop = new JButton(new ImageIcon("resources/stop.png"));
 		btn_next = new JButton(new ImageIcon("resources/next.png"));
@@ -56,13 +53,14 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 		btn_previous.addActionListener(this);
 		btn_random.addActionListener(this);
 		btn_repeat.addActionListener(this);
+		btn_mute.addActionListener(this);
 
 		s_volume = new JSlider(0, 200);
 		s_time = new JSlider(0, 3600);
 		s_volume.setMaximumSize(new Dimension(90, 20));
 
 		s_time.setValue(0);
-		
+
 		s_time.addChangeListener(this);
 		s_volume.addChangeListener(this);
 
@@ -84,22 +82,16 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btn_play) {
-			if (!isPlayed) {
-				isPlayed = true;
-				if (lb_list.getModel().getSize() != 0) {
-					if (!lb_list.isSelectionEmpty()) {
-						controller.play(lb_list.getSelectedValue(), this);
-					} else {
-						controller.play(lb_list.getModel().getElementAt(0), this);
-					}
-				}
+			if (!controller.isIsPlayed()) {
+				controller.setIsPlayed(true);
+				controller.play(controller.getSelectedFile(), this);
 			} else {
-				if (playPause) {
-					controller.playPause(playPause);
-					playPause = false;
+				if (controller.isPlayPause()) {
+					controller.playPause();
+					controller.setPlayPause(false);
 				} else {
-					controller.playPause(playPause);
-					playPause = true;
+					controller.playPause();
+					controller.setPlayPause(true);
 				}
 			}
 		} else if (e.getSource() == btn_next) {
@@ -112,7 +104,15 @@ public class ButtonBar extends JPanel implements ActionListener, ChangeListener,
 			controller.repeat();
 		} else if (e.getSource() == btn_stop) {
 			controller.stop();
-			isPlayed = false;
+			controller.setIsPlayed(false);
+		} else if (e.getSource() == btn_mute) {
+			if (isMute) {
+				controller.setVolume(s_volume.getValue());
+				isMute = !isMute;
+			} else {
+				controller.setVolume(0);
+				isMute = !isMute;
+			}
 		}
 	}
 
