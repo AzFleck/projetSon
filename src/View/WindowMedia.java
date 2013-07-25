@@ -173,7 +173,7 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 			
 		}
 		else if (e.getSource() == btn_sort){
-			
+			AddSort as = new AddSort(controller, this,1);
 		}
 		else if(e.getSource() == mi_addSort){
 			controller.addSort(this);
