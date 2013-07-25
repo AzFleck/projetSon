@@ -40,13 +40,10 @@ public class Controller extends Observable {
 	private HashMap<String, PlayList> playlists; // toutes les playlists
 	private ArrayList<Media> selectionPlaylist; //la playlist en cours
 	private ButtonBar buttonBar;
-<<<<<<< HEAD
-	private String selectedFile; //zone centrale pour fenetre détail
-    
-=======
+    private boolean Played, PlayPause; //Fichier en lecture/pause
+	private String selectedFile; //Fichier en cours de lecture
 	private String selectedMiddleFile; //zone centrale pour fenetre détail
-
->>>>>>> 21840c13087d5b338ade34f8196aab115f6e4802
+    
 	public Controller() {
 		this.currentPlayList = null;
 		this.parentSelectedItem = null;
@@ -57,6 +54,36 @@ public class Controller extends Observable {
 		this.selectionPlaylist = new ArrayList<Media>();
 	}
 
+    public void playPause()
+    {
+            Played = !Played;
+    }
+       
+    public boolean isPlayPause() {
+        return PlayPause;
+    }
+
+    public void setPlayPause(boolean PlayPause) {
+        this.PlayPause = PlayPause;
+    }
+
+    
+    public boolean isPlayed() {
+        return Played;
+    }
+
+    public void setPlayed(boolean Played) {
+        this.Played = Played;
+    }
+
+    public String getSelectedFile() {
+        return selectedFile;
+    }
+
+    public void setSelectedFile(String selectedFile) {
+        this.selectedFile = selectedFile;
+    }
+    
 	public String getSelectedMiddleFile() {
 		return selectedMiddleFile;
 	}
