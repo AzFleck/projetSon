@@ -91,6 +91,8 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 	private boolean passer_par_listener;
 	private JButton btn_artist;
 	private JButton btn_sort;
+	private JButton btn_artist_less;
+	private JButton btn_sort_less;
 	private JPanel left;
 
 	public WindowMedia() {
@@ -177,6 +179,11 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		}
 		else if (e.getSource() == btn_sort){
 			AddSort as = new AddSort(controller, this,1);
+		}
+		else if (e.getSource() == btn_artist_less){
+			
+		}
+		else if (e.getSource() == btn_sort_less){
 		}
 		else if(e.getSource() == mi_addSort){
 			controller.addSort(this);
@@ -417,8 +424,12 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		detail.removeAll();
 		btn_artist = new JButton("+");
 		btn_sort = new JButton("+");
+		btn_artist_less = new JButton("-");
+		btn_sort_less = new JButton("-");
 		btn_artist.addActionListener(this);
 		btn_sort.addActionListener(this);
+		btn_artist_less.addActionListener(this);
+		btn_sort_less.addActionListener(this);
 		Media m = controller.getMediaByName(name);
 		JPanel pnl_genre = new JPanel();
 		JPanel pnl_artists = new JPanel();
@@ -459,10 +470,18 @@ public class WindowMedia extends JFrame implements Observer, ActionListener, Ite
 		second.add(txt_date);
 		pnl_genre.add(lbl_sort);
 		pnl_genre.add(new JScrollPane(jlgenre));
-		pnl_genre.add(btn_sort);
+		JPanel pnl_sort = new JPanel();
+		pnl_sort.setLayout(new BoxLayout(pnl_sort, BoxLayout.PAGE_AXIS));
+		pnl_sort.add(btn_sort);
+		pnl_sort.add(btn_sort_less);
+		pnl_genre.add(pnl_sort);
 		pnl_artists.add(lbl_artist);
 		pnl_artists.add(new JScrollPane(jlartists));
-		pnl_artists.add(btn_artist);
+		JPanel pnl_artist = new JPanel();
+		pnl_artist.setLayout(new BoxLayout(pnl_artist, BoxLayout.PAGE_AXIS));
+		pnl_artist.add(btn_artist);
+		pnl_artist.add(btn_artist_less);
+		pnl_artists.add(pnl_artist);
 		detail.add(first);
 		detail.add(second);
 		third.add(pnl_genre);

@@ -120,7 +120,7 @@ public class AddSomething extends Observable implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == btn_add){
+		if(e.getSource() == btn_add && !text_fields[0].getText().isEmpty()){
 			if(typeOfAdd == 1) {
 				controller.insertPerson(text_fields[0].getText(), text_fields[1].getText(), text_fields[2].getText(), text_fields[3].getText());
 			} else if(typeOfAdd == 2) {
